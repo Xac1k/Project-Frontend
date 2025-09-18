@@ -1,0 +1,7 @@
+index.html
+calculator/
+node_modules/ 
+.vscode
+eslint.config.mjs
+*.js
+
