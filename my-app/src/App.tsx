@@ -1,7 +1,6 @@
-import React from "react";
-import type { Slide, Presentation } from "./store/types";
+import type { Presentation, SelectionElt } from "./store/types";
 import { WorkSpace } from "./views/workSpace/WorkSpace";
-import HotBar from "./views/toolbar/HotBar";
+import HotBar from "./views/toolbar/Toolbar";
 
 const TestPresentation: Presentation = {
   title: "TestMaximalDataSet",
@@ -231,15 +230,17 @@ const TestPresentation: Presentation = {
       ],
     },
   ],
-  selectedObjectID: [],
-  selectedSlideID: [],
+  selection: {
+    selectedObjectID: [],
+    selectedSlideID: ['0', '1', '2'],
+  }
 };
 
 function App() {
   return (
     <>
       <HotBar></HotBar>
-      <WorkSpace selection={[0]} slides={TestPresentation.slides}></WorkSpace>
+      <WorkSpace selection={TestPresentation.selection} slides={TestPresentation.slides}></WorkSpace>
     </>
   );
 }

@@ -1,4 +1,4 @@
-.DemanstrationButton {
+.DemoButton {
   height: 45px;
   width: 205px;
   border-radius: 10px;
@@ -14,11 +14,11 @@
   box-sizing: content-box;
 }
 
-.DemanstrationButton:hover {
+.DemoButton:hover {
   box-shadow: 5px 5px rgba(0, 0, 0, 0.247);
 }
 
-.DemanstrationButton:active {
+.DemoButton:active {
   border: 2px solid rgba(0, 0, 0, 0.247);
 }
 

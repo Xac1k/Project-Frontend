@@ -39,15 +39,16 @@ export type Slide = {
 };
 
 //Выделение.
-type SelectionElt = {
-  selectedSlideID: number[];
-  selectedObjectID: number[];
+export type SelectionElt = {
+  selectedSlideID: string[];
+  selectedObjectID: string[];
 };
 
 //Презентация,
-export type Presentation = SelectionElt & {
+export type Presentation = {
   slides: Slide[];
   title: string;
+  selection: SelectionElt;
 };
 
 //шрифты могут поддерживать bold regular и т.д.

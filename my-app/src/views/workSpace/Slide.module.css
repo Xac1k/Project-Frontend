@@ -1,0 +1,7 @@
+.Slide {
+    position: relative;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 1px solid black;
+}

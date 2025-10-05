@@ -1,4 +1,4 @@
-.HotBarButton {
+.ToolbarButton {
   width: 45px;
   height: 45px;
   background-color: #ffffff;
@@ -8,11 +8,11 @@
   cursor: pointer;
 }
 
-.HotBarButton:hover {
+.ToolbarButton:hover {
   box-shadow: 5px 5px rgba(0, 0, 0, 0.247);
 }
 
-.HotBarButton:active {
+.ToolbarButton:active {
   border: 2px solid rgba(0, 0, 0, 0.247);
 }
 
