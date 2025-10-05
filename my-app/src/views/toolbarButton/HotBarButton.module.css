@@ -1,0 +1,23 @@
+.HotBarButton {
+  width: 45px;
+  height: 45px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0;
+  border: 0px;
+  cursor: pointer;
+}
+
+.HotBarButton:hover {
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.247);
+}
+
+.HotBarButton:active {
+  border: 2px solid rgba(0, 0, 0, 0.247);
+}
+
+.innerPicture {
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+}

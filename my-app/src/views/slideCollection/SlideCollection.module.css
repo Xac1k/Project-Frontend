@@ -1,0 +1,25 @@
+.SlideCollention {
+  display: grid;
+  background-color: #afafaf;
+  width: 400px;
+  height: calc(100vh - 100px);
+  overflow: scroll;
+  overflow-x: hidden;
+  gap: 15px;
+  padding-left: 17px;
+}
+
+.SlideCollention::-webkit-scrollbar {
+  width: 10px;
+}
+
+.SlideCollention::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 50px;
+}
+
+.SlideCollention::-webkit-scrollbar-track {
+  background-clip: content-box;
+  border: 5px solid transparent;
+  border-right-width: 12px; /* Отступ справа */
+}

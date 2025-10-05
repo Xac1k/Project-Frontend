@@ -1,0 +1,18 @@
+.presentationName {
+  height: 45px;
+  width: 250px;
+  border-radius: 45px;
+  background-color: #ffffff;
+  font-size: 20px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  line-height: 24px;
+  color: rgb(0, 0, 0);
+  box-sizing: border-box;
+  padding: 9px 29px 12px;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 0px;
+  text-align: center;
+}
