@@ -33,8 +33,12 @@ function ClickableTextPlain(props: ClickableTextPlainProps) {
 }
 
 function NonClickableTextPlain(props: NonClickableTextPlainProps) {
+  const style: React.CSSProperties = {
+    ...props.style,
+    userSelect: `none`,
+  }
   return (
-    <div style={props.style} className={styles.innerText}>
+    <div style={style} className={styles.innerText}>
       {props.text}
     </div>
   );

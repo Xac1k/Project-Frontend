@@ -31,10 +31,14 @@ function ClickableIMG(props: ClickableImgProps) {
 }
 
 function NonClickableIMG(props: NonClickableImgProps) {
+  const style: React.CSSProperties = {
+      ...props.style,
+      userSelect: `none`,
+  }
   return (
     <img
       src={props.src}
-      style={props.style}
+      style={style}
       className={styles.innerImage}
     ></img>
   );

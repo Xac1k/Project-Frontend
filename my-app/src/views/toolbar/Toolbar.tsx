@@ -2,6 +2,7 @@ import styles from "./Toolbar.module.css";
 import ToolbarBtn from "../toolbarButton/ToolbarButton";
 import ToolbarInput from "../toolbarInput/ToolbarInputs";
 import ToolbarDemo from "../toolbarShow/ToolbarShow";
+import { PopOverBackground } from './PopOver'
 
 import { IconBackground } from "../toolbarButton/iconBackground";
 import { IconText } from "../toolbarButton/iconText";
@@ -9,6 +10,7 @@ import { IconExport } from "../toolbarButton/iconExport";
 import { IconImage } from "../toolbarButton/iconImage";
 import { IconRedo } from "../toolbarButton/iconRedo";
 import { IconUndo } from "../toolbarButton/iconUndo";
+import { useState } from "react";
 
 const onClickHandleExport = () => {
   console.log("Экспортировать файл");
@@ -18,9 +20,6 @@ const onClickHandleText = () => {
 };
 const onClickHandleIMG = () => {
   console.log("Создать элемент картинки");
-};
-const onClickHandleBGR = () => {
-  console.log("Изменение цвета фона");
 };
 const onClickHandleUndo = () => {
   console.log("Вернуть предыдущее состояние");
@@ -33,6 +32,14 @@ const onClickHandleDemo = () => {
 };
 
 export default function Toolbar() {
+  const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
+  const onClickHandleBGR = () => {
+    console.log("Изменение цвета фона");
+    setIsHiddenBackground(!isHiddenBackground);
+  };
+
+  // const onFocusHandleBGR = () => {}
+
   return (
     <div className={styles.ToolBar}>
       <div className={styles.EditingToolBar}>
@@ -46,9 +53,17 @@ export default function Toolbar() {
         <ToolbarBtn
           onClickHandle={onClickHandleIMG}
         >{IconImage()}</ToolbarBtn>
-        <ToolbarBtn
-          onClickHandle={onClickHandleBGR}
-        >{IconBackground()}</ToolbarBtn>
+
+        <div className={styles.BackgroundChoosen}>
+           <ToolbarBtn onClickHandle={onClickHandleBGR}>
+              {<IconBackground/>}
+            </ToolbarBtn>
+            <PopOverBackground isHidden={isHiddenBackground}></PopOverBackground>
+        </div>
+       
+
+        
+
         <ToolbarBtn
           onClickHandle={onClickHandleUndo}
         >{IconRedo()}</ToolbarBtn>
