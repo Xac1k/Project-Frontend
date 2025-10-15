@@ -192,8 +192,9 @@ function removeSlideObject(
   {slideID,
   slideObjID} : RemoveSlideObjectProps
 ): Presentation {
+  
   const slideArrayID = presentation.slides.findIndex(
-    (slide) => slide.id === slideID,
+    (slide) => slide.id == slideID,
   );
   if (slideArrayID == -1) {
     console.error(
@@ -779,24 +780,33 @@ function setSlideObjAsSelected(
   presentation: Presentation,
   {slideObjID}: setSlideObjectAs
 ): Presentation {
-  const slideID = presentation.selection.selectedSlideID[0];
-  const slideArrayID = presentation.slides.findIndex(
-    (slide) => slide.id === slideID,
-  );
-  if (!slideArrayID) {
-    console.error();
+
+  const selectedSlide = presentation.selection.selectedSlideID;
+  if (!selectedSlide.length) {
+    console.error("В слайде нет объектов");
     return presentation;
   }
-  const slideObjArrayID = presentation.slides[
-    slideArrayID
-  ].slideObjects.find((slideObj) => slideObj.id === slideObjID);
+  const selectedSlideID = selectedSlide[selectedSlide.length-1];
+  const slideArrayID = presentation.slides.findIndex((slide) => slide.id == selectedSlideID);
+  if (slideArrayID == -1) {
+    console.error("Выделенным слайд с таким  SlideID не найден:", selectedSlideID);
+  }
 
-  if (!slideObjArrayID) {
+  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id == slideObjID);
+  if (slideObjArrayID == -1) {
     console.error(
       "ID Error: SlideObj wiht SlideObjID:",
       slideObjID,
       "doesn't exist in Slide with SlideID:",
-      slideID,
+      presentation.slides[selectedSlide.length-1].id,
+    );
+    return presentation;
+  }
+  const isExist = presentation.selection.selectedObjectID.find((id) => id === slideObjID);
+  if(isExist) {
+    console.error(
+      "Tries to mark this slideObj twice slideObj:",
+      slideObjID,
     );
     return presentation;
   }
@@ -808,7 +818,7 @@ function setSlideObjAsSelected(
     ...presentation,
     selection: {
       ...presentation.selection,
-      selectedSlideID: newSelectedSlideObjArray,
+      selectedObjectID: newSelectedSlideObjArray,
     },
   };
 }
@@ -823,13 +833,13 @@ function setSlideObjAsUnselected(
 ): Presentation {
   const slideID = presentation.selection.selectedSlideID[0];
   const slideArrayID = presentation.slides.findIndex(
-    (slide) => slide.id === slideID,
+    (slide) => slide.id == slideID,
   );
-  if (slideArrayID != -1) {
-    console.error();
+  if (slideArrayID == -1) {
+    console.error("Слайда с таким slideID не существует:", slideID);
     return presentation;
   }
- 
+  
   const newSelectedSlideObjArray =
     presentation.selection.selectedObjectID.filter(
       (selectedID) => selectedID != slideObjID,
@@ -842,6 +852,16 @@ function setSlideObjAsUnselected(
       selectedObjectID: newSelectedSlideObjArray,
     },
   };
+}
+
+function clearSlideSelected(presentation: Presentation, {}): Presentation {
+  presentation.selection.selectedSlideID = [];
+  return presentation;
+}
+
+function clearSlideObjSelected(presentation: Presentation, {}): Presentation {
+  presentation.selection.selectedObjectID = [];
+  return presentation;
 }
 
 const blankSlide: Slide = {
@@ -885,4 +905,6 @@ export {
   setSlideAsUnselected,
   setSlideObjAsSelected,
   setSlideObjAsUnselected,
+  clearSlideSelected,
+  clearSlideObjSelected,
 };

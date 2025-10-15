@@ -24,7 +24,7 @@ export const dataJSON: Presentation = {
           w: 400,
           h: 400,
           id: "1",
-          src: "https://ts3.mm.bing.net/th?id=OIP.nRzTAfZoTeXvH3_ueUbqCgHaHa&pid=15.1",
+          src: "https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_68e4b4b3a342667a91f6a894_68e4b4b6cbdb0445cf0bb91b/scale_1200",
         },
         {
           type: "text",
