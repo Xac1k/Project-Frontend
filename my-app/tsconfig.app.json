@@ -4,20 +4,16 @@
     // "target": "ES2022",
     // "downlevelIteration": true,
 
-    "target": "ES2022",
+    "target": "es2016",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2016", "DOM", "DOM.Iterable"],
+    "allowJs": true,
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "exactOptionalPropertyTypes": true,
-
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -33,7 +29,11 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "allowArbitraryExtensions": true,
+
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["src"]
 }

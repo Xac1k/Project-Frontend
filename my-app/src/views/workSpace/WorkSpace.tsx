@@ -1,7 +1,8 @@
 import { SlideWorkSpace } from "./Slide";
 import { SlideCollection } from "../slideCollection/SlideCollection";
-import type { Slide, SelectionElt } from "../../store/types";
+import { type Slide, type SelectionElt } from "../../store/types";
 import style from "./WorkSpace.module.css";
+import { getEditor, setEditor } from "../../store/functions";
 
 type PropsWorkSpace = {
   slides: Slide[];
@@ -9,20 +10,26 @@ type PropsWorkSpace = {
 };
 
 export function WorkSpace(props: PropsWorkSpace) {
-  let slide: Slide = props.slides.filter((slide) => slide.id == props.selection.selectedSlideID[0])[0];
+  if (props.slides.length == 0) {
+    //отобразить пустой шаблон. Слайды не созданы
+  }
 
-  if (props.selection.selectedSlideID[0] == undefined) {
-    console.error("Selection Array is empty");
-    slide = props.slides[0];
+  if (props.selection.selectedSlideID.length == 0 && props.slides.length != 0) {
+    //Нет выделенных слайдов, поставить стандартный 
+    const presentation = getEditor();
+    presentation.selection.selectedSlideID.push(presentation.slides[0].id);
+    setEditor(presentation);
   }
-  if (slide == undefined) {
-    console.error("ID Error: the fisrt id in selection array don't exist, Slide ID:", props.selection.selectedSlideID[0]);
-    slide = props.slides[0];
-  }
+
+  const lastSelectedID = props.selection.selectedSlideID[props.selection.selectedSlideID.length - 1]
+  let slide: Slide = props.slides.filter((slide) => slide.id == lastSelectedID)[0];
 
   return (
     <div className={style.WorkSpace}>
-      <SlideCollection slides={props.slides} selection={props.selection.selectedSlideID}></SlideCollection>
+      <SlideCollection
+        slides={props.slides}
+        selection={props.selection.selectedSlideID}
+      ></SlideCollection>
       <div className={style.WorkSpaceSlide}>
         <SlideWorkSpace
           scale={1}

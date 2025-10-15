@@ -1,5 +1,5 @@
-import type { Picture } from '../../store/types';
-import styles from './ImgPlain.module.css'
+import type { Picture } from "../../store/types";
+import styles from "./ImgPlain.module.css";
 
 type ImageObjectProps = {
   imageObject: Picture;
@@ -12,32 +12,32 @@ type ClickableImgProps = {
   src: string;
   style: React.CSSProperties;
   onClickHandle: () => void;
-}
+};
 
 type NonClickableImgProps = {
   src: string;
   style: React.CSSProperties;
-}
+};
 
 function ClickableIMG(props: ClickableImgProps) {
   return (
     <img
-        src={props.src}
-        style={props.style}
-        onClick={props.onClickHandle}
-        className={styles.innerImage}
+      src={props.src}
+      style={props.style}
+      onClick={props.onClickHandle}
+      className={styles.innerImage}
     ></img>
-  )
+  );
 }
 
 function NonClickableIMG(props: NonClickableImgProps) {
   return (
     <img
-        src={props.src}
-        style={props.style}
-        className={styles.innerImage}
+      src={props.src}
+      style={props.style}
+      className={styles.innerImage}
     ></img>
-  )
+  );
 }
 
 export default function ImgPlain(props: ImageObjectProps) {
@@ -53,12 +53,18 @@ export default function ImgPlain(props: ImageObjectProps) {
 
   if (props.onClickHandle == null) {
     return (
-      <NonClickableIMG src={props.imageObject.src} style={style}></NonClickableIMG>
-    )
-  }
-  else {
+      <NonClickableIMG
+        src={props.imageObject.src}
+        style={style}
+      ></NonClickableIMG>
+    );
+  } else {
     return (
-      <ClickableIMG src={props.imageObject.src} style={style} onClickHandle={props.onClickHandle}></ClickableIMG>
-    )
+      <ClickableIMG
+        src={props.imageObject.src}
+        style={style}
+        onClickHandle={props.onClickHandle}
+      ></ClickableIMG>
+    );
   }
 }

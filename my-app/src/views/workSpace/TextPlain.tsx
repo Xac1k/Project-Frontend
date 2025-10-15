@@ -1,11 +1,11 @@
 import type React from "react";
 import type { TextPlain } from "../../store/types";
-import styles from './TextPlain.module.css'
+import styles from "./TextPlain.module.css";
 
 type TextObjectProps = {
   textObject: TextPlain;
   scale: number;
-  onClickHandle: (() => void)| null;
+  onClickHandle: (() => void) | null;
   selected: boolean;
 };
 
@@ -13,19 +13,23 @@ type ClickableTextPlainProps = {
   style: React.CSSProperties;
   text: string;
   onClickHandle: () => void;
-}
+};
 
 type NonClickableTextPlainProps = {
   style: React.CSSProperties;
   text: string;
-}
+};
 
 function ClickableTextPlain(props: ClickableTextPlainProps) {
   return (
-    <div style={props.style} onClick={props.onClickHandle} className={styles.innerText}>
+    <div
+      style={props.style}
+      onClick={props.onClickHandle}
+      className={styles.innerText}
+    >
       {props.text}
     </div>
-  )
+  );
 }
 
 function NonClickableTextPlain(props: NonClickableTextPlainProps) {
@@ -33,7 +37,7 @@ function NonClickableTextPlain(props: NonClickableTextPlainProps) {
     <div style={props.style} className={styles.innerText}>
       {props.text}
     </div>
-  )
+  );
 }
 
 export default function Text(props: TextObjectProps) {
@@ -50,12 +54,18 @@ export default function Text(props: TextObjectProps) {
 
   if (props.onClickHandle == null) {
     return (
-      <NonClickableTextPlain style={style} text={props.textObject.text}></NonClickableTextPlain>
-    )
-  }
-  else {
+      <NonClickableTextPlain
+        style={style}
+        text={props.textObject.text}
+      ></NonClickableTextPlain>
+    );
+  } else {
     return (
-      <ClickableTextPlain style={style} text={props.textObject.text} onClickHandle={props.onClickHandle}></ClickableTextPlain>
-    )
+      <ClickableTextPlain
+        style={style}
+        text={props.textObject.text}
+        onClickHandle={props.onClickHandle}
+      ></ClickableTextPlain>
+    );
   }
 }

@@ -1,8 +1,8 @@
-import type React from "react";
-import type { Slide } from "../../store/types";
+import { dispatch , getSlideState} from "../../store/functions";
+import { setSlideAsSelected, setSlideAsUnselected, type Slide } from "../../store/types";
 import { SlideWorkSpace } from "../workSpace/Slide";
 import styles from "./SlideCollection.module.css";
-import ToolbarCollection from  './toolbar/toolBar'
+import ToolbarCollection from "./toolbar/toolBar";
 
 type PropsSlideCollection = {
   slides: Slide[];
@@ -12,9 +12,18 @@ type PropsSlideCollection = {
 export function SlideCollection(props: PropsSlideCollection) {
   const slides = props.slides;
   const miniatureOfSlides = slides.map((slide) => {
-    const onClickHandle = () => {console.log("Слайд нажат", slide.id);}
+    const onClickHandle = () => {
+      if (getSlideState(slide.id) == false) {
+        console.log("Слайд нажат", slide.id, 'Поставить выделения');
+        dispatch(setSlideAsSelected, {slideID: slide.id});
+      }
+      else {
+        console.log("Слайд нажат", slide.id, 'Снятие выделения');
+        dispatch(setSlideAsUnselected, {slideID: slide.id});
+      }
+    };
     const isSelected = props.selection.includes(slide.id);
-    const style = isSelected ? {boxShadow: `0 0 0 5px #ea59287d`} : {};
+    const style = isSelected ? { boxShadow: `0 0 0 5px #ea59287d` } : {};
     return (
       <SlideWorkSpace
         style={style}
@@ -27,13 +36,15 @@ export function SlideCollection(props: PropsSlideCollection) {
       ></SlideWorkSpace>
     );
   });
-  
+
   return (
     <>
-      <div className={styles.SlideCollention}>
+      <div>
         <ToolbarCollection></ToolbarCollection>
-        {miniatureOfSlides}
+        <div className={styles.SlideCollention}>
+          {miniatureOfSlides}
+        </div>
       </div>
     </>
-    );
+  );
 }

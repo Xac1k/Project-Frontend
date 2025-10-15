@@ -1,7 +1,12 @@
-.toolbar{
-    display: flex;
-    justify-content: flex-end;
-    gap: 20px;
-    padding-right: 17px;
-    padding-top: 15px;
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  padding-right: 17px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  position: sticky;
+  width: 417px;
+  background-color: #afafaf;
+  box-sizing: border-box;
 }

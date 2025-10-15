@@ -1,13 +1,13 @@
-import type { Slide } from '../../store/types';
-import ImgPlain from './ImgPlain';
-import Text from './TextPlain';
-import styles from './Slide.module.css'
+import type { Slide } from "../../store/types";
+import ImgPlain from "./ImgPlain";
+import Text from "./TextPlain";
+import styles from "./Slide.module.css";
 
 type SlideProps = {
   slide: Slide;
   scale: number;
-  thumbnail: boolean|null;
-  onClick: (() => void)|null;
+  thumbnail: boolean | null;
+  onClick: (() => void) | null;
   style: React.CSSProperties;
   selectedObj: string[];
 };
@@ -15,20 +15,23 @@ type SlideProps = {
 export function SlideWorkSpace(slideProps: SlideProps) {
   const slide = slideProps.slide;
 
-  const style: React.CSSProperties = { ...slideProps.style,
+  const style: React.CSSProperties = {
+    ...slideProps.style,
     width: `${1011 * slideProps.scale}px`,
     height: `${643 * slideProps.scale}px`,
     backgroundColor:
-      slide.background.type == 'color' ? slide.background.color : undefined,
+      slide.background.type == "color" ? slide.background.color : undefined,
     backgroundImage:
-      slide.background.type == 'image' ? `url(${slide.background.src})` : undefined,
-    borderRadius: slideProps.thumbnail ? `15px` : undefined
+      slide.background.type == "image"
+        ? `url(${slide.background.src})`
+        : undefined,
+    borderRadius: slideProps.thumbnail ? `15px` : undefined,
   };
 
   const slideElt = slide.slideObjects.map((slideObj) => {
     const isSelected = slideProps.selectedObj.includes(slideObj.id);
 
-    if (slideObj.type == 'text') {
+    if (slideObj.type == "text") {
       if (slideProps.thumbnail) {
         return (
           <Text
@@ -41,16 +44,18 @@ export function SlideWorkSpace(slideProps: SlideProps) {
         );
       }
       return (
-          <Text
-            key={slideObj.id}
-            textObject={slideObj}
-            scale={slideProps.scale}
-            onClickHandle={() => (console.log('Слайд ID:', slide.id, 'Объект слайда:', slideObj.id))}
-            selected={isSelected}
-          ></Text>
-        );
-    } 
-    if (slideObj.type == 'image') {
+        <Text
+          key={slideObj.id}
+          textObject={slideObj}
+          scale={slideProps.scale}
+          onClickHandle={() =>
+            console.log("Слайд ID:", slide.id, "Объект слайда:", slideObj.id)
+          }
+          selected={isSelected}
+        ></Text>
+      );
+    }
+    if (slideObj.type == "image") {
       if (slideProps.thumbnail) {
         return (
           <ImgPlain
@@ -67,7 +72,9 @@ export function SlideWorkSpace(slideProps: SlideProps) {
           key={slideObj.id}
           imageObject={slideObj}
           scale={slideProps.scale}
-          onClickHandle={() => (console.log('Слайд ID:', slide.id, 'Объект слайда:', slideObj.id))}
+          onClickHandle={() =>
+            console.log("Слайд ID:", slide.id, "Объект слайда:", slideObj.id)
+          }
           selected={isSelected}
         ></ImgPlain>
       );
@@ -83,7 +90,7 @@ export function SlideWorkSpace(slideProps: SlideProps) {
   }
   return (
     <div style={style} onClick={slideProps.onClick} className={styles.Slide}>
-        {slideElt}
+      {slideElt}
     </div>
-  )
+  );
 }

@@ -1,7 +1,3 @@
-interface Array<T> {
-  findIndex(predicate: (value: T, index: number, obj: T[]) => boolean): number;
-}
-
 type BaseSlideObject = {
   x: number;
   y: number;
@@ -10,7 +6,7 @@ type BaseSlideObject = {
   id: string;
 };
 
-export type TextPlain = BaseSlideObject & {
+type TextPlain = BaseSlideObject & {
   text: string;
   font_size: number;
   font_family: string;
@@ -27,29 +23,40 @@ type Image = {
   type: "image";
 };
 
-export type Picture = BaseSlideObject & Image;
-export type SlideObj = TextPlain | Picture;
+type Picture = BaseSlideObject & Image;
+type SlideObj = TextPlain | Picture;
 type Background = Color | Image;
 
 //Слайд,
-export type Slide = {
+type Slide = {
   slideObjects: SlideObj[];
   background: Background;
   id: string;
 };
 
 //Выделение.
-export type SelectionElt = {
+type SelectionElt = {
   selectedSlideID: string[];
   selectedObjectID: string[];
 };
 
 //Презентация,
-export type Presentation = {
+type Presentation = {
   slides: Slide[];
   title: string;
   selection: SelectionElt;
 };
+
+export type { Presentation, SelectionElt, Slide, SlideObj, Picture, TextPlain };
+
+type ModifyFunction = (
+  presentation: Presentation,
+  payload: any,
+) => Presentation;
+
+export type { ModifyFunction };
+
+
 
 //шрифты могут поддерживать bold regular и т.д.
 
@@ -59,25 +66,41 @@ function getUniqID(): string {
 }
 
 // изменение названия презентации
-function changeTitle(presentation: Presentation, name: string): Presentation {
-  const newPresentation: Presentation = { 
+function changeTitle(presentation: Presentation, {name}: ChangeTitleProps): Presentation {
+  const newPresentation: Presentation = {
     ...presentation,
-    title: name
+    title: name,
   };
   return newPresentation;
 }
-
-// добавление/удаление слайда
-function removeSlide(presentation: Presentation, slideID: string): Presentation {
-  const newSlidesArray = presentation.slides.filter((slide) => slide.id != slideID);
-  
-  return { 
-    ...presentation,
-    slides: newSlidesArray
-  };
+type ChangeTitleProps = {
+  name: string
 }
 
-function addSlide(presentation: Presentation, slide: Slide, slideID: string, insertionID: string | null = null): Presentation {
+// добавление/удаление слайда
+function removeSlide(
+  presentation: Presentation,
+  {slideID}: RemoveSlideProps,
+): Presentation {
+  const newSlidesArray = presentation.slides.filter(
+    (slide) => slide.id != slideID,
+  );
+
+  return {
+    ...presentation,
+    slides: newSlidesArray,
+  };
+}
+type RemoveSlideProps = {
+  slideID: string
+}
+
+function addSlide(
+  presentation: Presentation,
+  {slide,
+  slideID,
+  insertionID = null} : AddSlideProps,
+): Presentation {
   const SlideExist = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -87,18 +110,17 @@ function addSlide(presentation: Presentation, slide: Slide, slideID: string, ins
       slideID,
     );
     return presentation;
-  };
+  }
 
   const newSlide = {
-    ...slide, 
-    id: slideID
+    ...slide,
+    id: slideID,
   };
 
   const editedSlidesArray = [...presentation.slides];
   if (insertionID == null) {
     editedSlidesArray.push(newSlide);
-  }
-  else {
+  } else {
     const slideArrayInsertionID = presentation.slides.findIndex(
       (slide) => slide.id === insertionID,
     );
@@ -112,16 +134,25 @@ function addSlide(presentation: Presentation, slide: Slide, slideID: string, ins
 
     editedSlidesArray.splice(slideArrayInsertionID, 0, slide);
   }
-  
-  return { 
-    ...presentation, 
-    slides: editedSlidesArray
+
+  return {
+    ...presentation,
+    slides: editedSlidesArray,
   };
+}
+type AddSlideProps = {
+  slide: Slide,
+  slideID: string,
+  insertionID: string | null
 }
 
 // изменение позиции слайда
 
-function changeLayer(presentation: Presentation, slideID: string, biasSlide: number): Presentation {
+function changeLayer(
+  presentation: Presentation,
+  {slideID,
+  biasSlide}: ChangeLayerProps
+): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -131,12 +162,13 @@ function changeLayer(presentation: Presentation, slideID: string, biasSlide: num
       slideID,
     );
     return presentation;
-  };
+  }
 
   const slideForChange = presentation.slides[slideArrayID];
-  const newSlideArrayID = biasSlide < 0 ? slideArrayID + biasSlide : slideArrayID + biasSlide + 1;
+  const newSlideArrayID =
+    biasSlide < 0 ? slideArrayID + biasSlide : slideArrayID + biasSlide + 1;
   const newSlidesArray = [...presentation.slides];
-  
+
   newSlidesArray.splice(newSlideArrayID, 0, slideForChange);
   if (slideArrayID <= newSlideArrayID) {
     newSlidesArray.splice(slideArrayID, 1);
@@ -145,13 +177,21 @@ function changeLayer(presentation: Presentation, slideID: string, biasSlide: num
   }
 
   return {
-    ...presentation, 
-    slides: newSlidesArray
+    ...presentation,
+    slides: newSlidesArray,
   };
+}
+type ChangeLayerProps = {
+  slideID: string,
+  biasSlide: number,
 }
 
 // добавление/удаление текста и картинки
-function removeSlideObject(presentation: Presentation, slideID: string, slideObjID: string): Presentation {
+function removeSlideObject(
+  presentation: Presentation,
+  {slideID,
+  slideObjID} : RemoveSlideObjectProps
+): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -163,20 +203,32 @@ function removeSlideObject(presentation: Presentation, slideID: string, slideObj
     return presentation;
   }
 
-  const newSlideObjArray = presentation.slides[slideArrayID].slideObjects.filter((slideObj) => slideObj.id != slideObjID);
+  const newSlideObjArray = presentation.slides[
+    slideArrayID
+  ].slideObjects.filter((slideObj) => slideObj.id != slideObjID);
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
+    slideObjects: newSlideObjArray,
   };
 
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
 }
+type RemoveSlideObjectProps = {
+  slideID: string,
+  slideObjID: string,
+}
 
-function addSlideObject(presentation: Presentation, slideID: string, type: string, src: string | null, slideObjID: string): Presentation {
+function addSlideObject(
+  presentation: Presentation,
+  {slideID,
+  type,
+  src,
+  slideObjID} : AddSlideObjectProps
+): Presentation {
   const slideArrayID: number = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -213,7 +265,7 @@ function addSlideObject(presentation: Presentation, slideID: string, type: strin
       h: 100,
       id: slideObjID,
     };
-  };
+  }
 
   const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
   newSlideObjArray.splice(slideObjArrayID, 0, slideObj);
@@ -221,16 +273,27 @@ function addSlideObject(presentation: Presentation, slideID: string, type: strin
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
+    slideObjects: newSlideObjArray,
+  };
 
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
 }
+type AddSlideObjectProps = {
+  slideID: string,
+  type: string,
+  src: string | null,
+  slideObjID: string,
+}
 
-function changeLayerSlideObj(presentation: Presentation, slideID: string, slideObjID: string, biasSlideObj: number): Presentation {
+function changeLayerSlideObj(
+  presentation: Presentation,
+  {slideID,
+  slideObjID,
+  biasSlideObj} : ChangeLayerSlideObjProps
+): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -242,7 +305,9 @@ function changeLayerSlideObj(presentation: Presentation, slideID: string, slideO
     return presentation;
   }
 
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
   if (slideObjArrayID == -1) {
     console.error(
       "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
@@ -257,7 +322,7 @@ function changeLayerSlideObj(presentation: Presentation, slideID: string, slideO
 
   const newSlideObjects = [...presentation.slides[slideArrayID].slideObjects];
 
-  const cloneSlideObj = { ...newSlideObjects[slideObjArrayID]};
+  const cloneSlideObj = { ...newSlideObjects[slideObjArrayID] };
   newSlideObjects.splice(newSlideObjArrayID, 0, cloneSlideObj);
   if (slideObjArrayID <= newSlideObjArrayID) {
     newSlideObjects.splice(slideObjArrayID, 1);
@@ -268,17 +333,28 @@ function changeLayerSlideObj(presentation: Presentation, slideID: string, slideO
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjects
-  }
+    slideObjects: newSlideObjects,
+  };
 
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
+}
+type ChangeLayerSlideObjProps = {
+  slideID: string,
+  slideObjID: string,
+  biasSlideObj: number,
 }
 
 // изменение позиции текста/картинки
-function setPosition(presentation: Presentation, slideID: string, slideObjID: string, x: number, y: number): Presentation {
+function setPosition(
+  presentation: Presentation,
+  {slideID,
+  slideObjID,
+  x,
+  y}: SetPositionProps
+): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
   );
@@ -288,9 +364,11 @@ function setPosition(presentation: Presentation, slideID: string, slideObjID: st
       slideID,
     );
     return presentation;
-  };
+  }
 
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
   if (slideObjArrayID == -1) {
     console.error(
       "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
@@ -299,12 +377,13 @@ function setPosition(presentation: Presentation, slideID: string, slideObjID: st
     return presentation;
   }
 
-  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  const selectedObj =
+    presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
   const editedSlideObject = {
     ...selectedObj,
     x: x,
-    y: y
-  }
+    y: y,
+  };
 
   const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
   newSlideObjArray[slideObjArrayID] = editedSlideObject;
@@ -312,22 +391,28 @@ function setPosition(presentation: Presentation, slideID: string, slideObjID: st
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
-  
+    slideObjects: newSlideObjArray,
+  };
+
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
+}
+type SetPositionProps = {
+  slideID: string,
+  slideObjID: string,
+  x: number,
+  y: number,
 }
 
 // изменение размера текста/картинки
 function setSize(
   presentation: Presentation,
-  slideID: string,
-  slideObjID: string,
-  w: number,
-  h: number,
+  {slideID,
+  slideObjID,
+  w,
+  h}: SetSizeProps
 ): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
@@ -338,9 +423,11 @@ function setSize(
       slideID,
     );
     return presentation;
-  };
+  }
 
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
   if (slideObjArrayID == -1) {
     console.error(
       "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
@@ -349,12 +436,13 @@ function setSize(
     return presentation;
   }
 
-  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  const selectedObj =
+    presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
   const editedSlideObject = {
     ...selectedObj,
     w: w,
-    h: h
-  }
+    h: h,
+  };
 
   const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
   newSlideObjArray[slideObjArrayID] = editedSlideObject;
@@ -362,21 +450,27 @@ function setSize(
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
-  
+    slideObjects: newSlideObjArray,
+  };
+
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
+}
+type SetSizeProps = {
+  slideID: string,
+  slideObjID: string,
+  w: number,
+  h: number,
 }
 
 // изменение текста
 function setContent(
   presentation: Presentation,
-  slideID: string,
-  slideObjID: string,
-  text: string,
+  {slideID,
+  slideObjID,
+  text}: SetContentProps
 ): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
@@ -387,9 +481,11 @@ function setContent(
       slideID,
     );
     return presentation;
-  };
+  }
 
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
   if (slideObjArrayID == -1) {
     console.error(
       "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
@@ -398,16 +494,22 @@ function setContent(
     return presentation;
   }
 
-  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
-  if (selectedObj.type != 'text') {
-    console.error("Type error: The selected SlideObj isn't a text. SlideID:", slideID, "SlideObjID:", slideObjID);
+  const selectedObj =
+    presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  if (selectedObj.type != "text") {
+    console.error(
+      "Type error: The selected SlideObj isn't a text. SlideID:",
+      slideID,
+      "SlideObjID:",
+      slideObjID,
+    );
     return presentation;
   }
 
   const editedSlideObject = {
     ...selectedObj,
     text: text,
-  }
+  };
 
   const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
   newSlideObjArray[slideObjArrayID] = editedSlideObject;
@@ -415,127 +517,26 @@ function setContent(
   const newSlidesArray = [...presentation.slides];
   newSlidesArray[slideArrayID] = {
     ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
-  
+    slideObjects: newSlideObjArray,
+  };
+
   return {
     ...presentation,
-    slides: newSlidesArray
+    slides: newSlidesArray,
   };
+}
+type SetContentProps = {
+  slideID: string,
+  slideObjID: string,
+  text: string,
 }
 
 // изменение размера текста
 function setFontSize(
   presentation: Presentation,
-  slideID: string,
-  slideObjID: string,
-  size: number,
-): Presentation {
-    const slideArrayID = presentation.slides.findIndex(
-    (slide) => slide.id === slideID,
-  );
-  if (slideArrayID == -1) {
-    console.error(
-      "ID error: SlideID not found in Slides array. SlideID=",
-      slideID,
-    );
-    return presentation;
-  };
-
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
-  if (slideObjArrayID == -1) {
-    console.error(
-      "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
-      slideID,
-    );
-    return presentation;
-  }
-
-  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
-  if (selectedObj.type != 'text') {
-    console.error("Type error: The selected SlideObj isn't a text. SlideID:", slideID, "SlideObjID:", slideObjID);
-    return presentation;
-  }
-  
-  const editedSlideObject = {
-    ...selectedObj,
-    font_size: size,
-  }
-
-  const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
-  newSlideObjArray[slideObjArrayID] = editedSlideObject;
-
-  const newSlidesArray = [...presentation.slides];
-  newSlidesArray[slideArrayID] = {
-    ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
-  
-  return {
-    ...presentation,
-    slides: newSlidesArray
-  };
-}
-
-// изменение семейства шрифтов у текста
-function setFontFamily(
-  presentation: Presentation,
-  slideID: string,
-  slideObjID: string,
-  font_family: string,
-): Presentation {
-      const slideArrayID = presentation.slides.findIndex(
-    (slide) => slide.id === slideID,
-  );
-  if (slideArrayID == -1) {
-    console.error(
-      "ID error: SlideID not found in Slides array. SlideID=",
-      slideID,
-    );
-    return presentation;
-  };
-
-  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
-  if (slideObjArrayID == -1) {
-    console.error(
-      "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
-      slideID,
-    );
-    return presentation;
-  }
-
-  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
-  if (selectedObj.type != 'text') {
-    console.error("Type error: The selected SlideObj isn't a text. SlideID:", slideID, "SlideObjID:", slideObjID);
-    return presentation;
-  }
-  
-  const editedSlideObject = {
-    ...selectedObj,
-    font_family: font_family,
-  }
-
-  const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
-  newSlideObjArray[slideObjArrayID] = editedSlideObject;
-
-  const newSlidesArray = [...presentation.slides];
-  newSlidesArray[slideArrayID] = {
-    ...newSlidesArray[slideArrayID],
-    slideObjects: newSlideObjArray
-  }
-  
-  return {
-    ...presentation,
-    slides: newSlidesArray
-  };
-}
-
-// изменение фона слайда
-function setBackground(
-  presentation: Presentation,
-  slideID: string,
-  src: string | null = null,
-  color: string | null = null,
+  {slideID,
+  slideObjID,
+  size}: SetFontSizeProps
 ): Presentation {
   const slideArrayID = presentation.slides.findIndex(
     (slide) => slide.id === slideID,
@@ -547,7 +548,139 @@ function setBackground(
     );
     return presentation;
   }
-  
+
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  if (slideObjArrayID == -1) {
+    console.error(
+      "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
+      slideID,
+    );
+    return presentation;
+  }
+
+  const selectedObj =
+    presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  if (selectedObj.type != "text") {
+    console.error(
+      "Type error: The selected SlideObj isn't a text. SlideID:",
+      slideID,
+      "SlideObjID:",
+      slideObjID,
+    );
+    return presentation;
+  }
+
+  const editedSlideObject = {
+    ...selectedObj,
+    font_size: size,
+  };
+
+  const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
+  newSlideObjArray[slideObjArrayID] = editedSlideObject;
+
+  const newSlidesArray = [...presentation.slides];
+  newSlidesArray[slideArrayID] = {
+    ...newSlidesArray[slideArrayID],
+    slideObjects: newSlideObjArray,
+  };
+
+  return {
+    ...presentation,
+    slides: newSlidesArray,
+  };
+}
+type SetFontSizeProps = {
+  slideID: string,
+  slideObjID: string,
+  size: number,
+}
+
+// изменение семейства шрифтов у текста
+function setFontFamily(
+  presentation: Presentation,
+  {slideID,
+  slideObjID,
+  font_family}: SetFontFamilyProps
+): Presentation {
+  const slideArrayID = presentation.slides.findIndex(
+    (slide) => slide.id === slideID,
+  );
+  if (slideArrayID == -1) {
+    console.error(
+      "ID error: SlideID not found in Slides array. SlideID=",
+      slideID,
+    );
+    return presentation;
+  }
+
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  if (slideObjArrayID == -1) {
+    console.error(
+      "ID error: SlideObjID not found in SlideObjects array. SlideObjID=",
+      slideID,
+    );
+    return presentation;
+  }
+
+  const selectedObj =
+    presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  if (selectedObj.type != "text") {
+    console.error(
+      "Type error: The selected SlideObj isn't a text. SlideID:",
+      slideID,
+      "SlideObjID:",
+      slideObjID,
+    );
+    return presentation;
+  }
+
+  const editedSlideObject = {
+    ...selectedObj,
+    font_family: font_family,
+  };
+
+  const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
+  newSlideObjArray[slideObjArrayID] = editedSlideObject;
+
+  const newSlidesArray = [...presentation.slides];
+  newSlidesArray[slideArrayID] = {
+    ...newSlidesArray[slideArrayID],
+    slideObjects: newSlideObjArray,
+  };
+
+  return {
+    ...presentation,
+    slides: newSlidesArray,
+  };
+}
+type SetFontFamilyProps = {
+  slideID: string,
+  slideObjID: string,
+  font_family: string,
+}
+
+// изменение фона слайда
+function setBackground(
+  presentation: Presentation,
+  {slideID,
+  src,
+  color} : SetBackgroundProps
+): Presentation {
+  const slideArrayID = presentation.slides.findIndex(
+    (slide) => slide.id === slideID,
+  );
+  if (slideArrayID == -1) {
+    console.error(
+      "ID error: SlideID not found in Slides array. SlideID=",
+      slideID,
+    );
+    return presentation;
+  }
+
   const newSlideArray = [...presentation.slides];
 
   if (src != null) {
@@ -557,7 +690,7 @@ function setBackground(
     };
     const newSlide = {
       ...presentation.slides[slideArrayID],
-      background: newBackground
+      background: newBackground,
     };
 
     newSlideArray[slideArrayID] = newSlide;
@@ -568,24 +701,148 @@ function setBackground(
     };
     const newSlide = {
       ...presentation.slides[slideArrayID],
-      background: newBackground
+      background: newBackground,
     };
 
     newSlideArray[slideArrayID] = newSlide;
   }
   return {
     ...presentation,
-    slides: newSlideArray
+    slides: newSlideArray,
   };
 }
-// Функции не должны менять передаваемые параметры.
+type SetBackgroundProps = {
+  slideID: string,
+  src: string | null,
+  color: string | null,
+}
 
-const presentationMax: Presentation = {
-  title: "TestMaximalDataSet",
-  slides: [],
-  selectedObjectID: [],
-  selectedSlideID: [],
-};
+// Добавление слайдов в SelectionSlide
+function setSlideAsSelected(
+  presentation: Presentation,
+  {slideID}: setSlideAs
+): Presentation {
+  const slideArrayID = presentation.slides.findIndex(
+    (slide) => slide.id == slideID,
+  );
+  const isExist = presentation.selection.selectedSlideID.findIndex(
+    (slideArrayID) => slideArrayID == slideID
+  )
+
+  if (slideArrayID == -1) {
+    console.error(
+      "ID Error: SlideID for select that slide isn't exist, SlideID:", slideID
+    );
+    return presentation;
+  }
+
+  if (isExist != -1) {
+    console.log('Существует', isExist)
+    return presentation
+  }
+
+  const newSelectedSlidesArray = [...presentation.selection.selectedSlideID];
+  newSelectedSlidesArray.push(slideID);
+
+  return {
+    ...presentation,
+    selection: {
+      ...presentation.selection,
+      selectedSlideID: newSelectedSlidesArray,
+    },
+  };
+}
+type setSlideAs = {
+  slideID: string,
+}
+
+// Удаление слайдов в SelectionSlide
+function setSlideAsUnselected(
+  presentation: Presentation,
+  {slideID}: setSlideAs
+): Presentation {
+  const newSelectedSlidesArray = presentation.selection.selectedSlideID.filter(
+    (selectedID) => selectedID != slideID,
+  );
+
+  return {
+    ...presentation,
+    selection: {
+      ...presentation.selection,
+      selectedSlideID: newSelectedSlidesArray,
+    },
+  };
+}
+
+// Добавление Слайд Объекта в SelectionSlideObj
+function setSlideObjAsSelected(
+  presentation: Presentation,
+  {slideObjID}: setSlideObjectAs
+): Presentation {
+  const slideID = presentation.selection.selectedSlideID[0];
+  const slideArrayID = presentation.slides.findIndex(
+    (slide) => slide.id === slideID,
+  );
+  if (!slideArrayID) {
+    console.error();
+    return presentation;
+  }
+  const slideObjArrayID = presentation.slides[
+    slideArrayID
+  ].slideObjects.find((slideObj) => slideObj.id === slideObjID);
+
+  if (!slideObjArrayID) {
+    console.error(
+      "ID Error: SlideObj wiht SlideObjID:",
+      slideObjID,
+      "doesn't exist in Slide with SlideID:",
+      slideID,
+    );
+    return presentation;
+  }
+
+  const newSelectedSlideObjArray = [...presentation.selection.selectedObjectID];
+  newSelectedSlideObjArray.push(slideObjID);
+
+  return {
+    ...presentation,
+    selection: {
+      ...presentation.selection,
+      selectedSlideID: newSelectedSlideObjArray,
+    },
+  };
+}
+type setSlideObjectAs = {
+  slideObjID: string,
+}
+
+// Удаление Слайд Объекта в SelectionSlide
+function setSlideObjAsUnselected(
+  presentation: Presentation,
+  {slideObjID}: setSlideObjectAs
+): Presentation {
+  const slideID = presentation.selection.selectedSlideID[0];
+  const slideArrayID = presentation.slides.findIndex(
+    (slide) => slide.id === slideID,
+  );
+  if (slideArrayID != -1) {
+    console.error();
+    return presentation;
+  }
+ 
+  const newSelectedSlideObjArray =
+    presentation.selection.selectedObjectID.filter(
+      (selectedID) => selectedID != slideObjID,
+    );
+
+  return {
+    ...presentation,
+    selection: {
+      ...presentation.selection,
+      selectedObjectID: newSelectedSlideObjArray,
+    },
+  };
+}
 
 const blankSlide: Slide = {
   id: "0",
@@ -608,103 +865,24 @@ const blankSlide: Slide = {
   ],
 };
 
-//const fs = require("fs");
-
-function TestPresentationMax(presentationMax: Presentation) {
-  presentationMax = addSlide(presentationMax, blankSlide, "0");
-  presentationMax = addSlide(presentationMax, blankSlide, "1");
-  presentationMax = addSlide(presentationMax, blankSlide, "2");
-  presentationMax = addSlide(presentationMax, blankSlide, "3");
-  presentationMax = addSlide(presentationMax, blankSlide, "4");
-  presentationMax = addSlide(presentationMax, blankSlide, "5");
-  presentationMax = addSlide(presentationMax, blankSlide, "6");
-  presentationMax = addSlide(presentationMax, blankSlide, "7");
-  presentationMax = addSlide(presentationMax, blankSlide, "8");
-  presentationMax = addSlide(presentationMax, blankSlide, "9");
-
-  presentationMax = addSlideObject(
-    presentationMax,
-    "0",
-    "image",
-    "https://setImage.png",
-    "1",
-  );
-  presentationMax = addSlideObject(presentationMax, "0", "text", null, "2");
-  presentationMax = addSlideObject(presentationMax, "0", "text", null, "3");
-  presentationMax = addSlideObject(presentationMax, "0", "text", null, "4");
-  presentationMax = setPosition(presentationMax, "0", "2", 450, 500);
-  presentationMax = setPosition(presentationMax, "0", "3", 400, 500);
-  presentationMax = setPosition(presentationMax, "0", "4", 300, 500);
-  presentationMax = addSlideObject(
-    presentationMax,
-    "0",
-    "image",
-    "https://setImage.png",
-    "5",
-  );
-  presentationMax = setPosition(presentationMax, "0", "5", 200, 500);
-  presentationMax = setSize(presentationMax, "0", "5", 200, 500);
-  const data_json = JSON.stringify(presentationMax);
-  fs.writeFile("PresentationMax.json", data_json, () => {
-    console.log("Json has been saved");
-  });
-}
-
-function TestPresentationMin(presentationMin: Presentation) {
-  presentationMin = addSlide(presentationMin, blankSlide, "0");
-  presentationMin = addSlide(presentationMin, blankSlide, "1");
-  presentationMin = setBackground(presentationMin, "0", null, "red");
-  console.log("0: Backgroung has been colored", presentationMin);
-  presentationMin = setBackground(
-    presentationMin,
-    "0",
-    "http://image.png",
-    null,
-  );
-  console.log("0: Backgroung is picture", presentationMin);
-  presentationMin = addSlide(presentationMin, blankSlide, "2");
-  console.log("2: The Slide has been added", presentationMin);
-  presentationMin = changeLayer(presentationMin, "0", 1);
-  console.log("0, 1: Slides has been replaced", presentationMin);
-  presentationMin = changeTitle(
-    presentationMin,
-    "Test to change title of slide",
-  );
-  console.log("The title of presentation has been changed", presentationMin);
-  presentationMin = setFontFamily(presentationMin, "0", "0", "Arial");
-  console.log("0_0 : The FontFamily has been set to Arial", presentationMin);
-  presentationMin = setFontSize(presentationMin, "0", "0", 20);
-  console.log("0_0 : The FontSize is set to 20", presentationMin);
-  presentationMin = setContent(
-    presentationMin,
-    "0",
-    "0",
-    "Test to change the text",
-  );
-  console.log("0_0 : The content of text has been changed", presentationMin);
-  presentationMin = setSize(presentationMin, "0", "0", 500, 500);
-  console.log("0_0 : The content box has been resized", presentationMin);
-  presentationMin = setPosition(presentationMin, "0", "0", 500, 500);
-  console.log("0_0 : The content box has been relocated", presentationMin);
-  presentationMin = addSlideObject(
-    presentationMin,
-    "0",
-    "image",
-    "https://setImage.png",
-    "1",
-  );
-  console.log("0 : The image has been added to slide", presentationMin);
-  presentationMin = changeLayerSlideObj(presentationMin, "0", "0", 1);
-  console.log("0_0 0_1 : The slideObjects has been replaced", presentationMin);
-  presentationMin = removeSlideObject(presentationMin, "0", "1");
-  console.log("0_1 : The picture has been deleted", presentationMin);
-  presentationMin = removeSlide(presentationMin, "0");
-  console.log(
-    "0 : The slide with SlideID: 0  has been deleted",
-    presentationMin,
-  );
-}
-
-TestPresentationMin(presentationMax);
-
-//autosave настроить
+export {
+  blankSlide,
+  getUniqID,
+  changeTitle,
+  removeSlide,
+  addSlide,
+  changeLayer,
+  removeSlideObject,
+  addSlideObject,
+  changeLayerSlideObj,
+  setPosition,
+  setSize,
+  setContent,
+  setFontSize,
+  setFontFamily,
+  setBackground,
+  setSlideAsSelected,
+  setSlideAsUnselected,
+  setSlideObjAsSelected,
+  setSlideObjAsUnselected,
+};

@@ -1,18 +1,16 @@
-import styles from './ToolbarButton.module.css';
+import styles from "./ToolbarButton.module.css";
+import type { ReactNode } from "react";
 
 type ToolbarBtnMSG = {
-  src: string;
-  onClickHandle: () => void
+  // src: string;
+  onClickHandle: () => void;
+  children: ReactNode;
 };
 
-export default function ToolbarBtn({ src, onClickHandle }: ToolbarBtnMSG) {
+export default function ToolbarBtn(props : ToolbarBtnMSG) {
   return (
-    <button className={styles.ToolbarButton} onClick={onClickHandle}>
-      <img
-        src={src}
-        alt='Картинка инструмента'
-        className={styles.innerPicture}
-      />
+    <button className={styles.ToolbarButton} onClick={props.onClickHandle}>
+      {props.children}
     </button>
   );
 }

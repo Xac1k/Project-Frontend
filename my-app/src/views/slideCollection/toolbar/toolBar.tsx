@@ -1,18 +1,33 @@
-import ToolbarBtn from '../../toolbarButton/ToolbarButton'
-import SlideSelection from './toolbarSelection.module.css'
+import ToolbarBtn from "../../toolbarButton/ToolbarButton";
+import { IconDel } from "./iconDel";
+import { IconPlus } from "./iconPlus";
+import SlideSelection from "./toolbarSelection.module.css";
+import { addSlide, getUniqID, removeSlide, blankSlide, setSlideAsUnselected } from '../../../store/types';
+import { dispatch, getEditor } from '../../../store/functions';
 
-const base64Prefix: string = 'data:image/png;base64, ';
-const delButtonURL = base64Prefix+'iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAAAXNSR0IArs4c6QAAAwtJREFUeAHtneF12jAUhT1CRmCUjNINygbxBrBBukG7QUZgBEbwCK9cKooJ2FjCuj/sT+dwILaliz6uny0F9JqmsETEe0RsI+J3RBwjoovlFfXpkPrYqs+FuPKqRcTbieXHQqFOtYlM9RkRmzx6E45OgHdT38mKjpsP+Mm9P1fu4Ge+kcN/TPDr8CERgYufYb7u3w2THNiTQsXXtQ1eTSSgC+fbANb7zelKO7FtDvtG4Oue6IMthItv2Mr+HA8jCupl7VLrAYHtAx83je4L08DjQR02FRDQYOc+Xqeb8IL2qDJC4DaEJDePHM+uFwhcXY2bX8D4vGr7P1YTm5/TeuGI7gw6zcK90A5VJxB4192Gpv8odQlsBVrzyZS6BP4ItMbnlLoEjgK9xP+M1MWW33on0BQDAUAbIEsC0IA2ETDJ4GhAmwiYZHA0oE0ETDI4GtAmAiYZHA1oEwGTDI4GtImASQZHA9pEwCSDowFtImCSwdGANhEwyeBoQJsImGSyHd11Xez3+2jbdlUP9fl41A+wykoWaAltNptommaVD/VdRispWaD1qa4V8qXfYlBSAJ15dlpA67RZe+gojdNZjtYpI6HdbreqC6Eu/OpzaXwWt2zQJfGJOoC2eQBHm1ADGtAmAiYZHA1oEwGTDI4GtImASQZHA9pEwCSDowFtImCSwdGANhEwyeBoQJsImGRwNKBNBEwyOBrQJgImGRwNaBMBkwyONoIu+9ae6Q0uROa8eFX5d1EXQsHQjYNCBwsM1id9XmBQ2YEodQm0crRSMVHqEviX+onVHKtSPvbXj2bF3XqsP/uglWyMUofAbfKyU4aFsh9n1HlzS2n16uaLrVPaJgYv833EGp/curkHm1u9+UCPZ4QjhMxCen8x7+hzRJD5rZz3YRRuf2eK1yxJnw9bBr0muOlDHXtNGMkiPS1cDAFPGeGY4Rtmrju1x5nehqAObU+5tH4Na612j8Ye+aFiCPRlew/4mh0uB2vKYn7AF9D95zTrJ0HNZ+vCucTBjvokU6mPGmMUJ2D/Cz0zn05zsCxRAAAAAElFTkSuQmCC';
-const addButtonURL = base64Prefix+'iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAAAXNSR0IArs4c6QAAA51JREFUeAHt3Y2VmkAUBWBK2BIsxVLSQexg6UA72HSQdLAlWIIlWMKL1wy5qICAXhzwzjkeXxCf8vky/GTCFMXIFhHriNhExO+IOETEMZbXsE37tI0ltnkk17C3RcTHyfJzoah9ywRF9RURq2F6PdZOwNu+3+SN1nse+Kl6f755Bd+rG1T4jx712r5KRLiK7zHz9W27ZMsrqav4Zg5HPQWw4/xoYb1dnPa0PXN7tSuB71vRhiXuLq7Yxv2xuxtBpz4ur9/VILBpqOOiwHFhOvFoeI8XjRDAyc5tf50Owkfk81s6BC67kFTNHeu//qXj8Ri73e78OBxw6DqbxqrOvZoBu1qtoiiK8wMx4GfSyv99de59Myq5Qq6esWwm7XiGTlfhsv7OZVneQGPZjNoaRxvZf+MFQG8AjevJWbcFQP8BNM7Ps24LgD4AOvvd9wKgj4DOvi0AOgw9UZkZ2tAUcNdBC2lkaCkvkxuaFtLI0FJeJjc0LaSRoaW8TG5oWkgjQ0t5mdzQtJBGhpbyMrmhaSGNDC3lZXJD00IaGVrKy+SGpoU0MrSUl8kNTQtpZGgpL5O/JXQ1qhMbP9VjvV7fDAnDsqk+H5+DsX6PjGId9I+z16M6qwGH7/L8yCjWQdBNozrfBbnazrGjWA2dxlxXkPeeJ4FG/1wfEH7vSy3tdWz72H56UEXjOAAftN1uJ90R5bAzxDY/8r8MBkPzoGu6CHv9678dWDanZuiJfi1DG5oC7jpoIY0MLeVlckPTQhoZWsrL5IamhTQytJSXyQ1NC2lkaCkvkxuaFtLI0FJeJjc0LaSRoaW8TG5oWkgjQ0t5mdzQtJBGhpbyMrmhaSGNDC3lZXJD00IaGVrKy+RLgfbNq/ibqqLzzauyv6PqAip6j3EdvsGgqo6Z93yDQcwOlHVrGi48dlTniza0REVjKqas2/Uo1kdGdb5oQ/9N/TSHuzlWo1gfHdX5AuhD/f7R8xqa+QKtBz7yqw6NycbcNAKXk5edZliYzS3GNR6SrKzmqqzTtE3Zn7xIODRJcX5yWc017OwP9TQmkqzdM8K5C3kK+q4q3s7niPDMb+O995249RdTf539LenHW8jeiQLlBDd11K7Y3cigH6Rfd9EGnmaEy/4K3yCS566MI7Xmmd7aUNuWp7m0fj33+y0iG849hncVbdDV8hr4O1c4KhiXLJ4PXEHXn9NVP3wgrmdjx7nEkx1sE4oK24hzjNETsP8F+NUu7z4M4isAAAAASUVORK5CYII=';
+const onClickHandleAdd = () => {
+  console.log("Добавление слайда");
+  dispatch(addSlide, {slide: blankSlide, slideID: getUniqID(), insertionID: null})
+};
 
-const onClickHandleAdd = () => {console.log('Добавление слайда')};
-const onClickHandleDel = () => {console.log('Удаление слайда')};
+const onClickHandleDel = () => {
+  console.log("Удаление слайда");
+  const presentation = getEditor();
+  presentation.selection.selectedSlideID.forEach((slideID)=>{
+    dispatch(removeSlide, {slideID: slideID})
+    dispatch(setSlideAsUnselected, {slideID: slideID})
+  });
+};
 
 export default function ToolbarCollection() {
   return (
     <div className={SlideSelection.toolbar}>
-        <ToolbarBtn onClickHandle={onClickHandleAdd} src={addButtonURL}></ToolbarBtn>
-        <ToolbarBtn onClickHandle={onClickHandleDel} src={delButtonURL}></ToolbarBtn>
+      <ToolbarBtn
+        onClickHandle={onClickHandleAdd}
+      >{IconPlus()}</ToolbarBtn>
+      <ToolbarBtn
+        onClickHandle={onClickHandleDel}
+      >{IconDel()}</ToolbarBtn>
     </div>
   );
 }

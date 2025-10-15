@@ -1,18 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import {App} from './App';
+// import {dataJSON} from './store/PresentationMax';
+import {presentation} from "./store/functions"
+import { addEditorChangeHandler } from './store/functions';
 
-const body = document.body
 
-body.style.margin = '0'
-body.style.padding = '0'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
-root.render(
-  <React.StrictMode>
-    <App/>
-  </React.StrictMode>,
-);
+export default function render(){
+    root.render(
+      <React.StrictMode>
+        <App presentation={presentation}></App>
+      </React.StrictMode>,
+    );
+}
+
+addEditorChangeHandler(render);
+render();
