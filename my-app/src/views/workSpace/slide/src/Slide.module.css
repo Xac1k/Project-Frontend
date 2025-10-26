@@ -1,6 +1,6 @@
 .Slide {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background-repeat: no-repeat;
   background-size: cover;
   border: 1px solid black;

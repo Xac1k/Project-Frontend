@@ -1,4 +1,5 @@
 .innerText {
   position: absolute;
   border-radius: 5px;
+  user-select: none;
 }

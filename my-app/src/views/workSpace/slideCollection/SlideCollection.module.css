@@ -2,7 +2,7 @@
   display: grid;
   background-color: #afafaf;
   width: 400px;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 175px);
   overflow: scroll;
   overflow-x: hidden;
   gap: 15px;
@@ -16,4 +16,10 @@
 .SlideCollention::-webkit-scrollbar-thumb {
   background-color: #d9d9d9;
   border-radius: 50px;
+}
+
+.EltSlideCollection {
+  overflow: hidden;
+  width: 370px;
+  height: 235px;
 }

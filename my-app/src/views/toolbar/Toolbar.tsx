@@ -2,7 +2,7 @@ import styles from "./Toolbar.module.css";
 import ToolbarBtn from "../toolbarButton/ToolbarButton";
 import ToolbarInput from "../toolbarInput/ToolbarInputs";
 import ToolbarDemo from "../toolbarShow/ToolbarShow";
-import { PopOverBackground } from './PopOver'
+import { PopOverBackground, PopOverCreatingImage, PopOverCreatingText } from './PopOver'
 
 import { IconBackground } from "../toolbarButton/iconBackground";
 import { IconText } from "../toolbarButton/iconText";
@@ -15,12 +15,6 @@ import { useState } from "react";
 const onClickHandleExport = () => {
   console.log("Экспортировать файл");
 };
-const onClickHandleText = () => {
-  console.log("Создать текстовый элемент");
-};
-const onClickHandleIMG = () => {
-  console.log("Создать элемент картинки");
-};
 const onClickHandleUndo = () => {
   console.log("Вернуть предыдущее состояние");
 };
@@ -32,13 +26,33 @@ const onClickHandleDemo = () => {
 };
 
 export default function Toolbar() {
+  const [isHiddenImage, setIsHiddenImage] = useState<boolean>(true);
   const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
+  const [isHiddenText, setIsHiddenText] = useState<boolean>(true);
+
+  const onClickHandleIMG = () => {
+    console.log("Создать элемент картинки");
+    setIsHiddenImage(!isHiddenImage);
+    setIsHiddenBackground(true)
+    setIsHiddenText(true)
+  };
+
+  const onClickHandleText = () => {
+    console.log("Создать текстовый элемент");
+    setIsHiddenText(!isHiddenText);
+    setIsHiddenBackground(true);
+    setIsHiddenImage(true);
+  };
+
   const onClickHandleBGR = () => {
     console.log("Изменение цвета фона");
     setIsHiddenBackground(!isHiddenBackground);
+    if (!isHiddenImage && isHiddenBackground) { 
+      setIsHiddenImage(true)
+    }; 
   };
 
-  // const onFocusHandleBGR = () => {}
+
 
   return (
     <div className={styles.ToolBar}>
@@ -47,22 +61,31 @@ export default function Toolbar() {
         <ToolbarBtn
           onClickHandle={onClickHandleExport}
         >{IconExport()}</ToolbarBtn>
-        <ToolbarBtn
-          onClickHandle={onClickHandleText}
-        >{IconText()}</ToolbarBtn>
-        <ToolbarBtn
-          onClickHandle={onClickHandleIMG}
-        >{IconImage()}</ToolbarBtn>
 
-        <div className={styles.BackgroundChoosen}>
+
+        <div className={styles.ButtonWithPopOver}>
+           <ToolbarBtn onClickHandle={onClickHandleText}>
+              {<IconText/>}
+            </ToolbarBtn>
+            <PopOverCreatingText isHidden={isHiddenText} setIsHidden={setIsHiddenText}></PopOverCreatingText>
+        </div>
+
+
+        <div className={styles.ButtonWithPopOver}>
+           <ToolbarBtn onClickHandle={onClickHandleIMG}>
+              {<IconImage/>}
+            </ToolbarBtn>
+            <PopOverCreatingImage isHidden={isHiddenImage} setIsHidden={setIsHiddenImage}></PopOverCreatingImage>
+        </div>
+          
+
+        <div className={styles.ButtonWithPopOver}>
            <ToolbarBtn onClickHandle={onClickHandleBGR}>
               {<IconBackground/>}
             </ToolbarBtn>
-            <PopOverBackground isHidden={isHiddenBackground}></PopOverBackground>
+            <PopOverBackground isHidden={isHiddenBackground} setIsHidden={setIsHiddenBackground}></PopOverBackground>
         </div>
        
-
-        
 
         <ToolbarBtn
           onClickHandle={onClickHandleUndo}

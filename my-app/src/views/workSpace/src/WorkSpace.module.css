@@ -8,4 +8,5 @@
   justify-content: center;
   width: calc(100vw - 400px);
   align-items: center;
+  overflow: hidden;
 }

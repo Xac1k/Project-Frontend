@@ -1,0 +1,6 @@
+.innerImage {
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  user-select: none;
+}

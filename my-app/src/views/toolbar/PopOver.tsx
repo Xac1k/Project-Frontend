@@ -1,29 +1,74 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import styles from './PopOver.module.css'
-import { dispatch, getEditor } from '../../store/functions'
-import { setBackground } from '../../store/types'
+import { dispatch, getUniqID, getLastSelectedSlideID } from '../../store/functions'
+import { addSlideObject, setBackground } from '../../store/types'
+import { isURL } from '../../store/Validation'
+
+
+type PopOverProps = {
+    isHidden: boolean;
+    setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 type PopOverBackgroundProps = {
-    isHidden: boolean
+    isHidden: boolean;
+}
+
+function PopOverCreatingImage(props: PopOverProps) {
+    const src = useRef<HTMLInputElement>(null);
+    if (!props.isHidden) {
+
+        const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (e.key == 'Enter') {
+                    const srcImage = src.current?.value;
+                    const slideObjID = getUniqID();
+                    if (isURL(srcImage)) {
+                        dispatch(addSlideObject, {slideID: getLastSelectedSlideID(), type: 'image', src: srcImage, slideObjID: slideObjID});
+                    }
+                }
+            }
+
+        return (
+            <div className={styles.PopOver} onKeyDown={onKeyDown}
+            onBlur={()=>{props.setIsHidden(true);}}> 
+                <input type='text' placeholder='src' ref={src} autoFocus></input>
+            </div>
+        )
+    }
+    return (<></>)
+}
+
+function PopOverCreatingText(props: PopOverProps) {
+    const text = useRef<HTMLInputElement>(null);
+    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (e.key == 'Enter') {
+                    const textContent = text.current?.value;
+                    const slideObjID = getUniqID();
+                    dispatch(addSlideObject, {slideID: getLastSelectedSlideID(), type: 'text', slideObjID: slideObjID, text: textContent});
+                }
+            }
+
+    if (!props.isHidden) {
+        return (
+            <div className={styles.PopOver} onKeyDown={onKeyDown}
+            onBlur={()=>props.setIsHidden(true)}> 
+                <input type='text' placeholder='text' ref={text} autoFocus></input>
+            </div>
+        )
+    }
+    return (<></>)
 }
 
 function PopOverColor(props: PopOverBackgroundProps) {
-    const RGB = /rgb\(\d+[ ]*,[ ]*\d+[ ]*, [ ]*\d+[ ]*\)/gm;
-    const HEX = /#[\dABCDEFabcdef]{6,8}/gm;
     if (!props.isHidden) {
         return (
             <>
-                <label htmlFor='inputColor'>Введите цвет в формате rgd/hex</label>
-                <input id='inputColor' type='text' onKeyDown={
+                <input type='color' onInput={
                     (event) => {
-                        if (event.key == 'Enter') {
-                            const target = event.target as HTMLInputElement;
-                            const inputData = target.value;
-                            const selectedSlideID = getEditor().selection.selectedSlideID
-                            if (RGB.test(inputData) || HEX.test(inputData)) {
-                                dispatch(setBackground, {slideID: selectedSlideID[selectedSlideID.length-1], color: inputData})
-                            }                            
-                        }
+                        const target = event.target as HTMLInputElement;
+                        const inputData = target.value;
+                        const selectedSlideID = getLastSelectedSlideID();
+                        dispatch(setBackground, {slideID: selectedSlideID[selectedSlideID.length-1], color: inputData})                
                     }}>
                 </input>
             </>
@@ -44,9 +89,8 @@ function PopOverImg(props: PopOverBackgroundProps) {
                         if (event.key == 'Enter') {
                             const target = event.target as HTMLInputElement;
                             console.log(target.value);
-                            const selectedSlideID = getEditor().selection.selectedSlideID
                             if (SRC.test(target.value)) {
-                                dispatch(setBackground, {slideID: selectedSlideID[selectedSlideID.length-1], src: target.value});
+                                dispatch(setBackground, {slideID: getLastSelectedSlideID(), src: target.value});
                             }                            
                         }
                     }}>
@@ -58,7 +102,7 @@ function PopOverImg(props: PopOverBackgroundProps) {
     return(<></>)
 }
 
-function PopOverBackground(props: PopOverBackgroundProps) {
+function PopOverBackground(props: PopOverProps) {
     const [isChosenColor, setChooseColor] = useState<boolean>(true);
     const [isChosenImg, setChooseImg] = useState<boolean>(true);
 
@@ -76,9 +120,9 @@ function PopOverBackground(props: PopOverBackgroundProps) {
 
     if (!props.isHidden) {
         return (
-            <div className={styles.PopOverBackground}>
+            <div className={styles.PopOver}>
                 <div>
-                    <button className={styles.PopOverButton_start} onClick={onClickHandleColor}>Цвет</button>
+                    <button className={styles.PopOverButton_start} onClick={onClickHandleColor} onBlur={()=>props.setIsHidden(true)} autoFocus>Цвет</button>
                     <PopOverColor isHidden={!isChosenColor}></PopOverColor>
                 </div>
                 
@@ -95,5 +139,7 @@ function PopOverBackground(props: PopOverBackgroundProps) {
 }
 
 export {
-    PopOverBackground
+    PopOverBackground,
+    PopOverCreatingImage,
+    PopOverCreatingText
 }

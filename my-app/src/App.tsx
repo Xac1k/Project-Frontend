@@ -1,5 +1,5 @@
 import type { Presentation } from "./store/types";
-import { WorkSpace } from "./views/workSpace/WorkSpace";
+import { WorkSpace } from "./views/workSpace/src/WorkSpace";
 import Toolbar from "./views/toolbar/Toolbar";
 
 type AppProps = {

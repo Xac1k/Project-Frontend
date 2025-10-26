@@ -1,0 +1,198 @@
+type buttonValue =
+  | "a"
+  | "b"
+  | "c"
+  | "d"
+  | "e"
+  | "f"
+  | "g"
+  | "h"
+  | "i"
+  | "j"
+  | "k"
+  | "l"
+  | "m"
+  | "n"
+  | "o"
+  | "p"
+  | "q"
+  | "r"
+  | "s"
+  | "t"
+  | "u"
+  | "v"
+  | "w"
+  | "x"
+  | "y"
+  | "z"
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J"
+  | "K"
+  | "L"
+  | "M"
+  | "N"
+  | "O"
+  | "P"
+  | "Q"
+  | "R"
+  | "S"
+  | "T"
+  | "U"
+  | "V"
+  | "W"
+  | "X"
+  | "Y"
+  | "Z"
+  | "0"
+  | "1"
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "!"
+  | "@"
+  | "#"
+  | "$"
+  | "%"
+  | "^"
+  | "&"
+  | "*"
+  | "("
+  | ")"
+  | "-"
+  | "_"
+  | "="
+  | "+"
+  | "["
+  | "]"
+  | "{"
+  | "}"
+  | ";"
+  | ":"
+  | "'"
+  | '"'
+  | ","
+  | "<"
+  | "."
+  | ">"
+  | "/"
+  | "?"
+  | "\\"
+  | "|"
+  | "`"
+  | "~"
+  | " "
+  | "Enter"
+  | "Tab"
+  | "Backspace"
+  | "Delete"
+  | "Insert"
+  | "Escape"
+  | "CapsLock"
+  | "Shift"
+  | "Control"
+  | "Alt"
+  | "Meta"
+  | "ContextMenu"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "ArrowUp"
+  | "ArrowDown"
+  | "PageUp"
+  | "PageDown"
+  | "Home"
+  | "End"
+  | "PrintScreen"
+  | "ScrollLock"
+  | "Pause"
+  | "F1"
+  | "F2"
+  | "F3"
+  | "F4"
+  | "F5"
+  | "F6"
+  | "F7"
+  | "F8"
+  | "F9"
+  | "F10"
+  | "F11"
+  | "F12"
+  | "NumLock"
+  | "Numpad0"
+  | "Numpad1"
+  | "Numpad2"
+  | "Numpad3"
+  | "Numpad4"
+  | "Numpad5"
+  | "Numpad6"
+  | "Numpad7"
+  | "Numpad8"
+  | "Numpad9"
+  | "NumpadAdd"
+  | "NumpadSubtract"
+  | "NumpadMultiply"
+  | "NumpadDivide"
+  | "NumpadDecimal"
+  | "NumpadEnter"
+  | "AudioVolumeMute"
+  | "AudioVolumeDown"
+  | "AudioVolumeUp"
+  | "MediaTrackNext"
+  | "MediaTrackPrevious"
+  | "MediaStop"
+  | "MediaPlayPause"
+  | "LaunchMail"
+  | "BrowserHome"
+  | "BrowserSearch"
+  | "BrowserFavorites"
+  | "BrowserRefresh"
+  | "BrowserStop"
+  | "BrowserForward"
+  | "BrowserBack";
+
+const HotKeyListeners = new Map<buttonValue, boolean>();
+
+//TODO Сделать один обработчик
+function addHotKeyHoldListener(button: buttonValue) {
+  if (HotKeyListeners.has(button)) return;
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === button) {
+      HotKeyListeners.set(button, true);
+    }
+  };
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.key === button) {
+      HotKeyListeners.set(button, false);
+    }
+  };
+
+  HotKeyListeners.set(button, false);
+
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
+}
+
+function getHotKey(payload: buttonValue[]): boolean | undefined {
+  let result: boolean | undefined = true;
+  for (let button of payload) {
+    result = result && HotKeyListeners.get(button);
+    if (!result) return false;
+  }
+  return result;
+}
+
+export { addHotKeyHoldListener, getHotKey };
