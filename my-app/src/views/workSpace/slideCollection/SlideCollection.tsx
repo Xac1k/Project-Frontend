@@ -12,6 +12,7 @@ import { SlideWorkSpace } from "../slide/src/Slide";
 import styles from "./SlideCollection.module.css";
 import ToolbarCollection from "./toolbar/toolBar";
 import type { StateWorkZone } from "../src/WorkSpace";
+import { canFlipThrough } from "../../../store/Validation";
 
 type PropsSlideCollection = {
   slides: Slide[];
@@ -59,7 +60,7 @@ export function SlideCollection(props: PropsSlideCollection) {
 
   useEffect(() => {
     const arrowHandler = (e: KeyboardEvent) => {
-      if (props.stateWorkZone.current.edit) return;
+      if (!canFlipThrough(props.stateWorkZone)) return;
       let id: string | undefined;
       function selectAction(e: KeyboardEvent, id: string) {
         dispatch(clearSlideObjSelected, {});

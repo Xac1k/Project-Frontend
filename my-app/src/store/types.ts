@@ -322,7 +322,7 @@ type SetPositionProps = {
 
 // изменение позиции текста/картинки на определённое смещение
 function displaceSlideObj(presentation: Presentation, { slideID, slideObjectsID, shift }: displaceSlideObjProps): Presentation {
-  console.log("Передвигаем", slideObjectsID);
+  console.log("Передвигаем", slideObjectsID, "на", shift);
   const slideArrayID = presentation.slides.findIndex((slide) => slide.id === slideID);
   if (slideArrayID == -1) {
     console.error("ID error: SlideID not found in Slides array. SlideID=", slideID);

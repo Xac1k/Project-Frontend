@@ -1,5 +1,4 @@
 import ReactDOM from "react-dom/client";
-import React from "react";
 import { App } from "./App";
 import { presentation } from "./store/functions";
 import { addEditorChangeHandler } from "./store/functions";
@@ -19,11 +18,7 @@ addHotKeyHoldListener("Control");
 addHotKeyHoldListener("Delete");
 
 export default function render() {
-  root.render(
-    <React.StrictMode>
-      <App presentation={presentation}></App>
-    </React.StrictMode>,
-  );
+  root.render(<App presentation={presentation}></App>);
 }
 
 addEditorChangeHandler(render);

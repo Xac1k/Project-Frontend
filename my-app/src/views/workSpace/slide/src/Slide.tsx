@@ -23,8 +23,18 @@ export function SlideWorkSpace(props: SlideProps) {
   const thumbnail = props?.thumbnail ?? false;
   const selectedObjData = slide.slideObjects.filter((slide) => selectionSlideObj.includes(slide.id));
   // if (!thumbnail) console.log(props, selectionSlideObj);
-  const { onMouseDown, shiftSelectedObj } = useDnD({ slideID: slide.id, selectedObjID: selectionSlideObj, stateWorkZone: props.stateWorkZone });
-  const { additionSizeSelectedObj, entityForSize } = useSize({ slideID: slide.id, slideObj: selectedObjData, stateWorkZone: props.stateWorkZone });
+  const { onMouseDown, shiftSelectedObj } = useDnD({
+    slideID: slide.id,
+    selectedObjID: selectionSlideObj,
+    stateWorkZone: props.stateWorkZone,
+    thumbnail,
+  });
+  const { data: dataSize, entityForSize } = useSize({
+    slideID: slide.id,
+    slideObj: selectedObjData,
+    stateWorkZone: props.stateWorkZone,
+    thumbnail,
+  });
   const style: React.CSSProperties = {
     ...props.style,
     width: `${1011 * props.scale}px`,
@@ -54,7 +64,7 @@ export function SlideWorkSpace(props: SlideProps) {
     scale,
     shiftSelectedObj,
     onMouseDown,
-    additionSizeSelectedObj,
+    dataSize,
     stateWorkZone: props.stateWorkZone,
   });
 

@@ -1,3 +1,4 @@
+import { canSelect } from "../../../../../store/Validation";
 import type { StateWorkZone } from "../../../src/WorkSpace";
 import { selectSingle } from "./selectSingle";
 import { selectWithCtrl } from "./selectWithCtrl";
@@ -18,31 +19,32 @@ function createClickHandle({ slideID, slideObjID, type, stateWorkZone }: createC
     if (clickTimeout) clearTimeout(clickTimeout);
     clickTimeout = null;
   };
+  let onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 
-  if (type === "text") {
-    const onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      const waiting = 200;
-      if (clickTimeout != null) {
-        setAsEditable(slideID, slideObjID, e, nullTimeout, stateWorkZone);
-      } else {
-        if (!stateWorkZone.current.stateDnD.isEnd && !stateWorkZone.current.edit) {
+  switch (type) {
+    case "text":
+      onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const waiting = 200;
+        if (clickTimeout != null) {
+          setAsEditable(slideID, slideObjID, e, nullTimeout, stateWorkZone);
+        } else {
+          if (!canSelect(stateWorkZone)) return;
           clickTimeout = setTimeout(() => {
             if (selectWithCtrl(slideObjID)) {
             } else selectSingle(slideObjID);
             nullTimeout();
           }, waiting);
         }
-      }
-    };
-    return { onClick };
-  } else {
-    const onClick = () => {
-      if (!stateWorkZone.current.stateDnD.isEnd && !stateWorkZone.current.edit) {
+      };
+      return { onClick };
+
+    case "img":
+      onClick = () => {
+        if (!canSelect(stateWorkZone)) return;
         if (selectWithCtrl(slideObjID)) {
         } else selectSingle(slideObjID);
-      }
-    };
-    return { onClick };
+      };
+      return { onClick };
   }
 }
 
