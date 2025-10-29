@@ -2,7 +2,7 @@ import type React from "react";
 import { type TextPlain } from "../../../../../store/types";
 import styles from "./TextPlain.module.css";
 import { useRef } from "react";
-import { computeSizeAndPosition } from "../functions/computeSizeAndPosition";
+import { computeSizeAndPosition } from "../../../../../store/computeSizeAndPosition";
 import type { SizeData } from "../../functions/DragAndDropSize";
 
 type TextObjectProps = {

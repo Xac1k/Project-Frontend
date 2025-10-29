@@ -1,5 +1,8 @@
-import { type ModifyFunction, type Presentation } from "./types";
+import { setSizeAndPositionArray, type ModifyFunction, type Presentation, type SlideObj } from "./types";
 import { dataJSON } from "./PresentationMax";
+import { computeSizeAndPosition } from "./computeSizeAndPosition";
+import type { Rect } from "./typesView";
+import type { Side } from "../views/workSpace/slide/functions/DragAndDropSize";
 export let presentation: Presentation = dataJSON;
 let EditorChangeHandler: () => void;
 
@@ -97,6 +100,47 @@ function getPrevSlideID(curSlideID: string): string | undefined {
   return nextSlideID.id;
 }
 
+type payloadForResize = {
+  slideID: string;
+  slideObjID: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+function recomputeSizeSlideObjects(
+  AdditionSizeSelectedObj: Rect,
+  bndRect: React.RefObject<Rect>,
+  side: React.RefObject<Side>,
+  slideObjects: SlideObj[],
+  slideID: string,
+) {
+  console.log(
+    "Расширяем и и передвигаем",
+    slideObjects.map((slide) => slide.id),
+    "на",
+    AdditionSizeSelectedObj,
+  );
+  const payloads: payloadForResize[] = [];
+  for (const slideObj of slideObjects) {
+    const DataSize = {
+      addSizeMarkedObj: AdditionSizeSelectedObj,
+      bndRect: bndRect,
+      side: side,
+    };
+    const newSize = computeSizeAndPosition(DataSize, slideObj);
+    payloads.push({
+      slideID,
+      slideObjID: slideObj.id,
+      x: newSize.x,
+      y: newSize.y,
+      w: newSize.w,
+      h: newSize.h,
+    });
+  }
+  dispatch(setSizeAndPositionArray, { payloads: payloads });
+}
+
 export {
   doFunc,
   getUniqID,
@@ -110,4 +154,5 @@ export {
   getNumberSelectedSlideObj,
   getNextSlideID,
   getPrevSlideID,
+  recomputeSizeSlideObjects,
 };

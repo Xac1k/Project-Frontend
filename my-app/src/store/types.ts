@@ -406,6 +406,62 @@ type SetSizeProps = {
   h: number;
 };
 
+function setSizeAndPosition(presentation: Presentation, { slideID, slideObjID, x, y, w, h }: SetSizeAndPositionProps): Presentation {
+  const slideArrayID = presentation.slides.findIndex((slide) => slide.id === slideID);
+  if (slideArrayID == -1) {
+    console.error("ID error: SlideID not found in Slides array. SlideID=", slideID);
+    return presentation;
+  }
+
+  const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === slideObjID);
+  if (slideObjArrayID == -1) {
+    console.error("ID error: SlideObjID not found in SlideObjects array. SlideObjID=", slideID);
+    return presentation;
+  }
+
+  const selectedObj = presentation.slides[slideArrayID].slideObjects[slideObjArrayID];
+  const editedSlideObject = {
+    ...selectedObj,
+    x: x,
+    y: y,
+    w: w,
+    h: h,
+  };
+
+  const newSlideObjArray = [...presentation.slides[slideArrayID].slideObjects];
+  newSlideObjArray[slideObjArrayID] = editedSlideObject;
+
+  const newSlidesArray = [...presentation.slides];
+  newSlidesArray[slideArrayID] = {
+    ...newSlidesArray[slideArrayID],
+    slideObjects: newSlideObjArray,
+  };
+
+  return {
+    ...presentation,
+    slides: newSlidesArray,
+  };
+}
+type SetSizeAndPositionProps = {
+  slideID: string;
+  slideObjID: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
+type setSizeAndPositionArrayProps = {
+  payloads: SetSizeAndPositionProps[];
+};
+function setSizeAndPositionArray(presentation: Presentation, { payloads }: setSizeAndPositionArrayProps) {
+  for (const payload of payloads) {
+    presentation = setSizeAndPosition(presentation, payload);
+  }
+
+  return presentation;
+}
+
 // изменение текста
 function setContent(presentation: Presentation, { slideID, slideObjID, text }: SetContentProps): Presentation {
   const slideArrayID = presentation.slides.findIndex((slide) => slide.id === slideID);
@@ -643,12 +699,7 @@ function setSlideObjAsSelected(presentation: Presentation, { slideObjID }: setSl
 
   const slideObjArrayID = presentation.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id == slideObjID);
   if (slideObjArrayID == -1) {
-    console.error(
-      "ID Error: SlideObj wiht SlideObjID:",
-      slideObjID,
-      "doesn't exist in Slide with SlideID:",
-      presentation.slides[selectedSlide.length - 1].id,
-    );
+    console.error("ID Error: SlideObj wiht SlideObjID:", slideObjID, "doesn't exist in Slide with SlideID:", presentation.slides[selectedSlide.length - 1].id);
     return presentation;
   }
   const isExist = presentation.selection.selectedObjectID.find((id) => id === slideObjID);
@@ -760,6 +811,8 @@ export {
   setPosition,
   setSize,
   setContent,
+  setSizeAndPosition,
+  setSizeAndPositionArray,
   setFontSize,
   setFontFamily,
   setBackground,

@@ -1,5 +1,6 @@
 .Button {
-    border: 1px solid black;
-    background-color: whitesmoke;
-    box-sizing: border-box;
+  position: absolute;
+  border: 1px solid black;
+  background-color: whitesmoke;
+  box-sizing: border-box;
 }

@@ -2,7 +2,7 @@ import { useRef } from "react";
 import type { Picture } from "../../../../../store/types";
 import styles from "./ImgPlain.module.css";
 import type { SizeData } from "../../functions/DragAndDropSize";
-import { computeSizeAndPosition } from "../functions/computeSizeAndPosition";
+import { computeSizeAndPosition } from "../../../../../store/computeSizeAndPosition";
 
 type ImageObjectProps = {
   imageObj: Picture;

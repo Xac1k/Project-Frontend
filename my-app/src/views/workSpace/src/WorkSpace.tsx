@@ -70,6 +70,7 @@ export function WorkSpace(props: PropsWorkSpace) {
         setlastSelectedID={setlastSelectedID}
         stateWorkZone={stateWorkZone}
       ></SlideCollection>
+
       {props.slides.length != 0 ? (
         <div className={style.WorkSpaceSlide}>
           <SlideWorkSpace
