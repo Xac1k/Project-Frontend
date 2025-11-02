@@ -13,14 +13,11 @@ type PropsWorkSpace = {
 export type StateWorkZone = {
   edit: boolean;
   stateDnD: {
-    isMoving: boolean;
-    isStarted: boolean;
-    isEnd: boolean;
+    active: boolean;
     target: HTMLDivElement | null;
   };
   stateSizing: {
-    isMoving: boolean;
-    isStarted: boolean;
+    active: boolean;
     isMultiply: boolean;
   };
 };
@@ -40,14 +37,11 @@ export function WorkSpace(props: PropsWorkSpace) {
   const stateWorkZone = useRef<StateWorkZone>({
     edit: false,
     stateDnD: {
-      isMoving: false,
-      isStarted: false,
-      isEnd: false,
-      target: null,
+      active: false,
+      target: null, // TODO сделать props isDraged получаем id перемещаемых эл и ставим стили в slideObj
     },
     stateSizing: {
-      isMoving: false,
-      isStarted: false,
+      active: false,
       isMultiply: false,
     },
   });
@@ -73,15 +67,7 @@ export function WorkSpace(props: PropsWorkSpace) {
 
       {props.slides.length != 0 ? (
         <div className={style.WorkSpaceSlide}>
-          <SlideWorkSpace
-            scale={1}
-            slide={slide}
-            thumbnail={false}
-            onClick={null}
-            style={{}}
-            selectedObj={props.selection.selectedObjectID}
-            stateWorkZone={stateWorkZone}
-          ></SlideWorkSpace>
+          <SlideWorkSpace slide={slide} selectedObj={props.selection.selectedObjectID} stateWorkZone={stateWorkZone}></SlideWorkSpace>
         </div>
       ) : (
         <></>

@@ -5,4 +5,9 @@ type Rect = {
   h: number;
 };
 
-export type { Rect };
+type Vector = {
+  x: number;
+  y: number;
+};
+
+export type { Rect, Vector };

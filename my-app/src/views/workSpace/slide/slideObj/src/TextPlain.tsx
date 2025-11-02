@@ -1,27 +1,25 @@
 import type React from "react";
 import { type TextPlain } from "../../../../../store/types";
 import styles from "./TextPlain.module.css";
-import { useRef } from "react";
-import { computeSizeAndPosition } from "../../../../../store/computeSizeAndPosition";
-import type { SizeData } from "../../functions/DragAndDropSize";
+import type { Rect } from "../../../../../store/typesView";
 
 type TextObjectProps = {
   textObject: TextPlain;
   scale: number;
-  onClickHandle?: ((e: React.MouseEvent<HTMLDivElement>) => void) | null;
-  onMouseDown?: ((e: React.MouseEvent<HTMLDivElement>) => void) | null;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
   selected?: boolean;
-  shiftSelectedObj?: { x: number; y: number };
-  dataSize?: SizeData;
+  delta?: { x: number; y: number };
+  deltaSize?: Rect;
 };
 
 type ClickableTextPlainProps = {
   style: React.CSSProperties;
   text: string;
   id: string;
-  onClickHandle: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onBlur: (e: React.FocusEvent<HTMLDivElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void;
 };
 
 type NonClickableTextPlainProps = {
@@ -39,8 +37,8 @@ function ClickableTextPlain(props: ClickableTextPlainProps) {
     <div
       id={`slideObj-${props.id}`}
       style={style}
-      onClick={props.onClickHandle}
       onMouseDown={props.onMouseDown}
+      onMouseUp={props.onMouseUp}
       onBlur={props.onBlur}
       className={styles.innerText}
       draggable={false}
@@ -63,51 +61,32 @@ function NonClickableTextPlain(props: NonClickableTextPlainProps) {
   );
 }
 
-export default function Text({ textObject, scale, onClickHandle, onMouseDown, selected, shiftSelectedObj, dataSize }: TextObjectProps) {
-  shiftSelectedObj = shiftSelectedObj ?? { x: 0, y: 0 };
+export default function Text({ textObject, scale, onMouseDown, onMouseUp, selected, delta }: TextObjectProps) {
+  delta = delta ?? { x: 0, y: 0 };
   selected = selected ?? false;
-  dataSize = dataSize ?? {
-    addSizeMarkedObj: { x: 0, y: 0, w: 0, h: 0 },
-    bndRect: useRef({ x: 0, y: 0, w: 0, h: 0 }),
-    side: useRef("none"),
-  };
-  onClickHandle = onClickHandle ?? null;
-  onMouseDown = onMouseDown ?? null;
-
-  dataSize = selected
-    ? dataSize
-    : {
-        addSizeMarkedObj: { x: 0, y: 0, w: 0, h: 0 },
-        bndRect: useRef({ x: 0, y: 0, w: 0, h: 0 }),
-        side: useRef("none"),
-      };
-  shiftSelectedObj = selected ? shiftSelectedObj : { x: 0, y: 0 };
-
-  const newSize = selected ? computeSizeAndPosition(dataSize, textObject) : { x: textObject.x, y: textObject.y, w: textObject.w, h: textObject.h };
+  delta = selected ? delta : { x: 0, y: 0 };
 
   const style: React.CSSProperties = {
-    top: `${(newSize.y + shiftSelectedObj.y) * scale}px`,
-    left: `${(newSize.x + shiftSelectedObj.x) * scale}px`,
-    width: `${newSize.w * scale}px`,
-    height: `${newSize.h * scale}px`,
+    top: `${(textObject.y + delta.y) * scale}px`,
+    left: `${(textObject.x + delta.x) * scale}px`,
+    width: `${textObject.w * scale}px`,
+    height: `${textObject.h * scale}px`,
     fontFamily: `${textObject.font_family}`,
     fontSize: `${textObject.font_size * scale}px`,
     boxShadow: selected ? `0 0 0 2px #00ffd5b7` : ``,
-    cursor: onClickHandle ? "grab" : "",
+    cursor: onMouseDown ? "grab" : "",
   };
 
-  if (onClickHandle == null || onMouseDown == null) {
+  if (!onMouseDown) {
     return <NonClickableTextPlain style={style} text={textObject.text}></NonClickableTextPlain>;
   } else {
     return (
       <ClickableTextPlain
         style={style}
         text={textObject.text}
-        onClickHandle={onClickHandle}
         onMouseDown={onMouseDown}
-        onBlur={() => {
-          console.log("Снятие");
-        }}
+        onMouseUp={onMouseUp}
+        onBlur={() => {}}
         id={textObject.id}
       ></ClickableTextPlain>
     );

@@ -5,3 +5,12 @@
   background-size: cover;
   border: 1px solid black;
 }
+
+.ThumblnailSlide {
+  position: relative;
+  overflow: visible;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid black;
+  border-radius: 15px;
+}

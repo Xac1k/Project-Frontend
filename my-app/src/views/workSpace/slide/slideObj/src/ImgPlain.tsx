@@ -1,25 +1,24 @@
-import { useRef } from "react";
 import type { Picture } from "../../../../../store/types";
 import styles from "./ImgPlain.module.css";
-import type { SizeData } from "../../functions/DragAndDropSize";
-import { computeSizeAndPosition } from "../../../../../store/computeSizeAndPosition";
+import type { Rect } from "../../../../../store/typesView";
 
 type ImageObjectProps = {
   imageObj: Picture;
   scale: number;
-  onClickHandle?: ((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void) | null;
-  onMouseDown?: ((e: React.MouseEvent<HTMLDivElement>) => void) | null;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
   selected?: boolean;
-  shiftSelectedObj?: { x: number; y: number };
-  dataSize?: SizeData;
+  delta?: { x: number; y: number };
+  deltaSize?: Rect;
 };
 
 type ClickableImgProps = {
   src: string;
   style: React.CSSProperties;
   id: string;
-  onClickHandle: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void;
 };
 
 type NonClickableImgProps = {
@@ -33,10 +32,12 @@ function ClickableIMG(props: ClickableImgProps) {
       id={`slideObj-${props.id}`}
       src={props.src}
       style={props.style}
-      onClick={props.onClickHandle}
       onMouseDown={props.onMouseDown}
+      onMouseUp={props.onMouseUp}
+      onBlur={props.onBlur}
       className={styles.innerImage}
       draggable={false}
+      tabIndex={1}
     ></img>
   );
 }
@@ -49,40 +50,25 @@ function NonClickableIMG(props: NonClickableImgProps) {
   return <img src={props.src} style={style} className={styles.innerImage}></img>;
 }
 
-export default function ImgPlain({ imageObj, scale, onClickHandle, onMouseDown, selected, shiftSelectedObj, dataSize }: ImageObjectProps) {
-  shiftSelectedObj = shiftSelectedObj ?? { x: 0, y: 0 };
+export default function ImgPlain({ imageObj, scale, onMouseDown, onMouseUp, selected, delta }: ImageObjectProps) {
+  delta = delta ?? { x: 0, y: 0 };
   selected = selected ?? false;
-  dataSize = dataSize ?? {
-    addSizeMarkedObj: { x: 0, y: 0, w: 0, h: 0 },
-    bndRect: useRef({ x: 0, y: 0, w: 0, h: 0 }),
-    side: useRef("none"),
-  };
-  onClickHandle = onClickHandle ?? null;
-  onMouseDown = onMouseDown ?? null;
+  delta = selected ? delta : { x: 0, y: 0 };
 
-  dataSize = selected
-    ? dataSize
-    : {
-        addSizeMarkedObj: { x: 0, y: 0, w: 0, h: 0 },
-        bndRect: useRef({ x: 0, y: 0, w: 0, h: 0 }),
-        side: useRef("none"),
-      };
-  shiftSelectedObj = selected ? shiftSelectedObj : { x: 0, y: 0 };
-
-  const newSize = selected ? computeSizeAndPosition(dataSize, imageObj) : { x: imageObj.x, y: imageObj.y, w: imageObj.w, h: imageObj.h };
+  // const newSize = selected ? computeSizeAndPosition(dataSize, imageObj) : { x: imageObj.x, y: imageObj.y, w: imageObj.w, h: imageObj.h };
 
   const style: React.CSSProperties = {
-    top: `${(newSize.y + shiftSelectedObj.y) * scale}px`,
-    left: `${(newSize.x + shiftSelectedObj.x) * scale}px`,
-    width: `${newSize.w * scale}px`,
-    height: `${newSize.h * scale}px`,
-    boxShadow: `${selected ? `0 0 0 2px #00ffd5b7` : ``}`,
-    cursor: `${onClickHandle ? "grab" : ""}`,
+    top: `${(imageObj.y + delta.y) * scale}px`,
+    left: `${(imageObj.x + delta.x) * scale}px`,
+    width: `${imageObj.w * scale}px`,
+    height: `${imageObj.h * scale}px`,
+    boxShadow: selected ? `0 0 0 2px #00ffd5b7` : ``,
+    cursor: onMouseDown ? "grab" : "",
   };
 
-  if (onClickHandle == null || onMouseDown == null) {
+  if (!onMouseDown) {
     return <NonClickableIMG src={imageObj.src} style={style}></NonClickableIMG>;
   } else {
-    return <ClickableIMG src={imageObj.src} style={style} onClickHandle={onClickHandle} onMouseDown={onMouseDown} id={imageObj.id}></ClickableIMG>;
+    return <ClickableIMG src={imageObj.src} style={style} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onBlur={() => {}} id={imageObj.id}></ClickableIMG>;
   }
 }

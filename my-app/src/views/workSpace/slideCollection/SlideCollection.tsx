@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import { dispatch, getLastSelectedSlideID, getNextSlideID, getNumberSelectedSlide, getPrevSlideID, getSlideState } from "../../../store/functions";
-import {
-  setSlideAsSelected,
-  setSlideAsUnselected,
-  type Slide,
-  clearSlideSelected,
-  clearSlideObjSelected,
-  selectSlideFromTo,
-} from "../../../store/types";
-import { SlideWorkSpace } from "../slide/src/Slide";
+import { setSlideAsSelected, setSlideAsUnselected, type Slide, clearSlideSelected, clearSlideObjSelected, selectSlideFromTo } from "../../../store/types";
+import { SlideThumblnail } from "../slide/src/Slide";
 import styles from "./SlideCollection.module.css";
 import ToolbarCollection from "./toolbar/toolBar";
 import type { StateWorkZone } from "../src/WorkSpace";
@@ -95,7 +88,6 @@ export function SlideCollection(props: PropsSlideCollection) {
 
   const miniatureOfSlides = slides.map((slide) => {
     const onClickHandle = (e: React.MouseEvent) => {
-      console.warn("Hell");
       dispatch(clearSlideObjSelected, {});
       if (getSlideState(slide.id) == false) {
         selecteSlideHandle(e, slide.id);
@@ -111,17 +103,8 @@ export function SlideCollection(props: PropsSlideCollection) {
         }
       : {};
     return (
-      <div className={styles.EltSlideCollection} style={style}>
-        <SlideWorkSpace
-          style={style}
-          slide={slide}
-          key={slide.id}
-          scale={scale}
-          onClick={onClickHandle}
-          thumbnail={true}
-          selectedObj={[]}
-          stateWorkZone={props.stateWorkZone}
-        ></SlideWorkSpace>
+      <div className={styles.EltSlideCollection} style={style} id={`Slide-${slide.id}`}>
+        <SlideThumblnail slide={slide} scale={scale} onMouseDown={onClickHandle} externalStyle={style}></SlideThumblnail>
       </div>
     );
   });

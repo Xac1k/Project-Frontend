@@ -1,8 +1,7 @@
-import { setSizeAndPositionArray, type ModifyFunction, type Presentation, type SlideObj } from "./types";
+import { setSizeAndPositionArray, type ModifyFunction, type Picture, type Presentation, type SlideObj, type TextPlain } from "./types";
 import { dataJSON } from "./PresentationMax";
-import { computeSizeAndPosition } from "./computeSizeAndPosition";
 import type { Rect } from "./typesView";
-import type { Side } from "../views/workSpace/slide/functions/DragAndDropSize";
+import { emptyRect } from "./constant";
 export let presentation: Presentation = dataJSON;
 let EditorChangeHandler: () => void;
 
@@ -100,6 +99,136 @@ function getPrevSlideID(curSlideID: string): string | undefined {
   return nextSlideID.id;
 }
 
+function getSelectionSlideObj() {
+  return getEditor().selection.selectedObjectID;
+}
+
+function getSizeWithLimitation(bounds: Rect, deltaSize: Rect, side: string, slideObj: SlideObj) {
+  let scaleX: number = (bounds.w + deltaSize.w) / bounds.w;
+  let scaleY: number = (bounds.h + deltaSize.h) / bounds.h;
+  switch (side) {
+    case "down-left":
+    case "left":
+      if (slideObj.w * scaleX < 20) {
+        scaleX = 20 / bounds.w;
+        deltaSize.x = bounds.w - 20;
+      }
+      if (slideObj.h * scaleY < 20) {
+        scaleY = 20 / bounds.h;
+      }
+      break;
+    case "down-right":
+    case "right":
+    case "down":
+      if (slideObj.w * scaleX < 20) {
+        scaleX = 20 / bounds.w;
+      }
+      if (slideObj.h * scaleY < 20) {
+        scaleY = 20 / bounds.h;
+      }
+      break;
+    case "up-right":
+    case "top":
+      if (slideObj.h * scaleY < 20) {
+        scaleY = 20 / bounds.h;
+        deltaSize.y = bounds.h - 20;
+      }
+      if (slideObj.w * scaleX < 20) {
+        scaleX = 20 / bounds.w;
+      }
+      break;
+    case "up-left":
+      if (slideObj.w * scaleX < 20) {
+        scaleX = 20 / bounds.w;
+        deltaSize.x = bounds.w - 20;
+      }
+      if (slideObj.h * scaleY < 20) {
+        scaleY = 20 / bounds.h;
+        deltaSize.y = bounds.h - 20;
+      }
+      break;
+    case "none":
+      return { scaleX, scaleY, deltaSizeWithLimit: deltaSize };
+  }
+
+  return { scaleX, scaleY, deltaSizeWithLimit: deltaSize };
+}
+
+function getCoeficientsForShiftWhenResize(side: string) {
+  let isLeft: number = 0,
+    isTop: number = 0;
+  switch (side) {
+    case "down-left":
+    case "left":
+      isLeft = 1;
+      break;
+    case "down-right":
+    case "right":
+    case "down":
+      break;
+    case "up-right":
+    case "top":
+      isTop = 1;
+      break;
+    case "up-left":
+      isLeft = 1;
+      isTop = 1;
+      break;
+  }
+
+  return { isLeft, isTop };
+}
+
+function computeSizeAndPosition(initialBndRect: Rect, deltaSize: Rect, side: string, slideObj: TextPlain | Picture) {
+  let newObjectSize: { x: number; y: number; w: number; h: number };
+  const bounds = initialBndRect;
+
+  const { isLeft, isTop } = getCoeficientsForShiftWhenResize(side);
+  const { scaleX, scaleY, deltaSizeWithLimit } = getSizeWithLimitation(bounds, deltaSize, side, slideObj);
+
+  newObjectSize = {
+    x: bounds.x + (slideObj.x - bounds.x) * scaleX + deltaSizeWithLimit.x * isLeft,
+    y: bounds.y + (slideObj.y - bounds.y) * scaleY + deltaSizeWithLimit.y * isTop,
+
+    w: slideObj.w * scaleX,
+    h: slideObj.h * scaleY,
+  };
+  return newObjectSize;
+}
+
+function getBoundingRect(slideObjects: SlideObj[]) {
+  if (slideObjects.length < 1) {
+    return emptyRect;
+  }
+  const rect: { x0: number; y0: number; x1: number; y1: number } = {
+    x0: Infinity,
+    y0: Infinity,
+    x1: 0,
+    y1: 0,
+  };
+  slideObjects.forEach((slide) => {
+    if (slide.x < rect.x0) {
+      rect.x0 = slide.x;
+    }
+    if (slide.y < rect.y0) {
+      rect.y0 = slide.y;
+    }
+    if (slide.y + slide.h > rect.y1) {
+      rect.y1 = slide.y + slide.h;
+    }
+    if (slide.x + slide.w > rect.x1) {
+      rect.x1 = slide.x + slide.w;
+    }
+  });
+
+  return {
+    x: rect.x0,
+    y: rect.y0,
+    w: rect.x1 - rect.x0,
+    h: rect.y1 - rect.y0,
+  };
+}
+
 type payloadForResize = {
   slideID: string;
   slideObjID: string;
@@ -108,36 +237,22 @@ type payloadForResize = {
   w: number;
   h: number;
 };
-function recomputeSizeSlideObjects(
-  AdditionSizeSelectedObj: Rect,
-  bndRect: React.RefObject<Rect>,
-  side: React.RefObject<Side>,
-  slideObjects: SlideObj[],
-  slideID: string,
-) {
+function recomputeSizeSlideObjects(deltaSize: Rect, side: React.RefObject<string>, slideObjects: SlideObj[], slideID: string) {
   console.log(
     "Расширяем и и передвигаем",
     slideObjects.map((slide) => slide.id),
     "на",
-    AdditionSizeSelectedObj,
+    deltaSize,
   );
+
+  const boundingRect = getBoundingRect(slideObjects);
   const payloads: payloadForResize[] = [];
-  for (const slideObj of slideObjects) {
-    const DataSize = {
-      addSizeMarkedObj: AdditionSizeSelectedObj,
-      bndRect: bndRect,
-      side: side,
-    };
-    const newSize = computeSizeAndPosition(DataSize, slideObj);
-    payloads.push({
-      slideID,
-      slideObjID: slideObj.id,
-      x: newSize.x,
-      y: newSize.y,
-      w: newSize.w,
-      h: newSize.h,
-    });
-  }
+  slideObjects.forEach((slideObj) => {
+    const newSize = computeSizeAndPosition(boundingRect, deltaSize, side.current, slideObj);
+
+    payloads.push({ slideID, slideObjID: slideObj.id, ...newSize });
+  });
+
   dispatch(setSizeAndPositionArray, { payloads: payloads });
 }
 
@@ -154,5 +269,8 @@ export {
   getNumberSelectedSlideObj,
   getNextSlideID,
   getPrevSlideID,
+  computeSizeAndPosition,
   recomputeSizeSlideObjects,
+  getBoundingRect,
+  getSelectionSlideObj,
 };

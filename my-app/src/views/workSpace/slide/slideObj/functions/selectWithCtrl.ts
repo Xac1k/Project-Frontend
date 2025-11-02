@@ -1,20 +1,12 @@
-import { dispatch, getSlideObjState } from "../../../../../store/functions";
-import { getHotKey } from "../../../../../store/HotKey";
-import { setSlideObjAsSelected, setSlideObjAsUnselected } from "../../../../../store/types";
+import { dispatch } from "../../../../../store/functions";
+import { setSlideObjAsSelected } from "../../../../../store/types";
 
-function selectWithCtrl(slideObjID: string): boolean {
-  if (getHotKey(['Control'])) {
-    if (getSlideObjState(slideObjID)) {
-      dispatch(setSlideObjAsUnselected, {slideObjID: slideObjID})
-    }
-    else {
-      dispatch(setSlideObjAsSelected, {slideObjID: slideObjID})
-    }
+function selectWithCtrl(e: React.MouseEvent<HTMLDivElement, MouseEvent>, slideObjID: string): boolean {
+  if (e.ctrlKey) {
+    dispatch(setSlideObjAsSelected, { slideObjID: slideObjID });
     return true;
   }
   return false;
 }
 
-export {
-    selectWithCtrl
-}
+export { selectWithCtrl };
