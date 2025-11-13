@@ -1,15 +1,15 @@
 import styles from "./Toolbar.module.css";
-import ToolbarBtn from "../toolbarButton/ToolbarButton";
-import ToolbarInput from "../toolbarInput/ToolbarInputs";
-import ToolbarDemo from "../toolbarShow/ToolbarShow";
+import ToolbarBtn from "./toolbarButton/ToolbarButton";
+import ToolbarInput from "./toolbarInput/ToolbarInputs";
+import ToolbarDemo from "./toolbarShow/ToolbarShow";
 import { PopOverBackground, PopOverCreatingImage, PopOverCreatingText } from './PopOver'
 
-import { IconBackground } from "../toolbarButton/iconBackground";
-import { IconText } from "../toolbarButton/iconText";
-import { IconExport } from "../toolbarButton/iconExport";
-import { IconImage } from "../toolbarButton/iconImage";
-import { IconRedo } from "../toolbarButton/iconRedo";
-import { IconUndo } from "../toolbarButton/iconUndo";
+import { IconBackground } from "./toolbarButton/iconBackground";
+import { IconText } from "./toolbarButton/iconText";
+import { IconExport } from "./toolbarButton/iconExport";
+import { IconImage } from "./toolbarButton/iconImage";
+import { IconRedo } from "./toolbarButton/iconRedo";
+import { IconUndo } from "./toolbarButton/iconUndo";
 import { useState } from "react";
 
 const onClickHandleExport = () => {

@@ -1,107 +1,72 @@
-import { setSizeAndPositionArray, type ModifyFunction, type Picture, type Presentation, type SlideObj, type TextPlain } from "./types";
-import { dataJSON } from "./PresentationMax";
+import { type Picture, type SlideObj, type TextPlain } from "./types";
 import type { Rect } from "./typesView";
 import { emptyRect } from "./constant";
-export let presentation: Presentation = dataJSON;
-let EditorChangeHandler: () => void;
 
-function getUniqID(): string {
+function uu4v(): string {
   const uniqID: string = Date.now().toString(36) + Math.random().toString(36);
   return uniqID;
 }
 
-function dispatch(modifyfn: ModifyFunction, payload: Object) {
-  const newState = modifyfn(presentation, payload); //  принимаем payload как объект по типу пропса
-  setEditor(newState);
-  if (EditorChangeHandler) {
-    EditorChangeHandler();
-  }
-}
+// function isSlideSelect(slideID: string): boolean {
+//   const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+//   return selectedSlideIDs.includes(slideID);
+// }
 
-function doFunc(modifyfn: ModifyFunction, payload: Object) {
-  const newState = modifyfn(presentation, payload); //  принимаем payload как объект по типу пропса
-  setEditor(newState);
-}
+// function isSlideObjSelect(slideObjID: string): boolean {
+//   const selectedObIDs = useAppSelector((state) => state.selection.selectedObjectID);
+//   return selectedObIDs.includes(slideObjID);
+// }
 
-function addEditorChangeHandler(handler: () => void) {
-  EditorChangeHandler = handler;
-}
+// function getFirtsSlideID(): string {
+//   const slides = useAppSelector((state) => state.slides);
+//   return slides[0].id;
+// }
 
-function setEditor(newState: Presentation) {
-  presentation = newState;
-}
+// function getSelectedSlideID(): string {
+//   const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+//   return selectedSlideIDs.at(-1) ?? "";
+// }
 
-function getEditor() {
-  return presentation;
-}
+// function getObjectsOntoCurrSlide(): SlideObj[] {
+//   const slides = useAppSelector((state) => state.slides);
+//   const currSlideID = getSelectedSlideID();
+//   const slideObjects = slides.find((slide) => slide.id === currSlideID)?.slideObjects;
+//   if (!slideObjects) return [];
+//   return slideObjects;
+// }
 
-//Узнать выделен ли Слайд
-function getSlideState(slideID: string): boolean {
-  const slideArrayID = getEditor().selection.selectedSlideID.find((slide) => slide === slideID);
-  return slideArrayID != undefined;
-}
+// function getNumberSelectedSlide(): number {
+//   const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+//   return selectedSlideIDs.length;
+// }
 
-//Узнать выделен ли Слайд
-function getSlideObjState(slideObjID: string): boolean {
-  const slideArrayID = getEditor().selection.selectedObjectID.find((slideObj) => slideObj === slideObjID);
-  return slideArrayID != undefined;
-}
+// function getNumberSelectedSlideObj(): number {
+//   const selectedSlideObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
+//   return selectedSlideObjIDs.length;
+// }
 
-function getFirtsSlideID(): string {
-  const presentation = getEditor();
-  const firstSlideID = presentation.slides[0].id;
+// function getNextSlideID(curSlideID: string): string | undefined {
+//   const slides = useAppSelector((state) => state.slides);
+//   const slideArrayID = slides.findIndex((slide) => slide.id === curSlideID);
+//   if (slideArrayID == -1) {
+//     return undefined;
+//   }
+//   const nextSlideID = slides[slideArrayID + 1];
+//   if (nextSlideID) {
+//     return nextSlideID.id;
+//   }
+//   return undefined;
+// }
 
-  return firstSlideID;
-}
-
-function getLastSelectedSlideID(): string {
-  const presentation = getEditor();
-  const lastArrayID = presentation.selection.selectedSlideID.length - 1;
-  const lastSlideID = presentation.selection.selectedSlideID[lastArrayID];
-
-  return lastSlideID;
-}
-
-function getNumberSelectedSlide(): number {
-  const presentation = getEditor();
-  const lenSlideSelection = presentation.selection.selectedSlideID.length;
-
-  return lenSlideSelection;
-}
-
-function getNumberSelectedSlideObj(): number {
-  const presentation = getEditor();
-  const lenSlideObjSelection = presentation.selection.selectedObjectID.length;
-
-  return lenSlideObjSelection;
-}
-
-function getNextSlideID(curSlideID: string): string | undefined {
-  const presentation = getEditor();
-  const slideArrayID = presentation.slides.findIndex((slide) => slide.id === curSlideID);
-  if (slideArrayID == -1) {
-    return undefined;
-  }
-  const nextSlideID = presentation.slides[slideArrayID + 1];
-  if (nextSlideID) {
-    return nextSlideID.id;
-  }
-  return undefined;
-}
-
-function getPrevSlideID(curSlideID: string): string | undefined {
-  const presentation = getEditor();
-  const slideArrayID = presentation.slides.findIndex((slide) => slide.id === curSlideID);
-  if (slideArrayID == -1 || slideArrayID - 1 < 0) {
-    return undefined;
-  }
-  const nextSlideID = presentation.slides[slideArrayID - 1];
-  return nextSlideID.id;
-}
-
-function getSelectionSlideObj() {
-  return getEditor().selection.selectedObjectID;
-}
+// function getPrevSlideID(curSlideID: string): string | undefined {
+//   const slides = useAppSelector((state) => state.slides);
+//   const slideArrayID = slides.findIndex((slide) => slide.id === curSlideID);
+//   if (slideArrayID == -1 || slideArrayID - 1 < 0) {
+//     return undefined;
+//   }
+//   const nextSlideID = slides[slideArrayID - 1];
+//   return nextSlideID.id;
+// }
 
 function getSizeWithLimitation(bounds: Rect, deltaSize: Rect, side: string, slideObj: SlideObj) {
   let scaleX: number = (bounds.w + deltaSize.w) / bounds.w;
@@ -229,48 +194,17 @@ function getBoundingRect(slideObjects: SlideObj[]) {
   };
 }
 
-type payloadForResize = {
-  slideID: string;
-  slideObjID: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-};
-function recomputeSizeSlideObjects(deltaSize: Rect, side: React.RefObject<string>, slideObjects: SlideObj[], slideID: string) {
-  console.log(
-    "Расширяем и и передвигаем",
-    slideObjects.map((slide) => slide.id),
-    "на",
-    deltaSize,
-  );
-
-  const boundingRect = getBoundingRect(slideObjects);
-  const payloads: payloadForResize[] = [];
-  slideObjects.forEach((slideObj) => {
-    const newSize = computeSizeAndPosition(boundingRect, deltaSize, side.current, slideObj);
-
-    payloads.push({ slideID, slideObjID: slideObj.id, ...newSize });
-  });
-
-  dispatch(setSizeAndPositionArray, { payloads: payloads });
-}
-
 export {
-  doFunc,
-  getUniqID,
-  dispatch,
-  addEditorChangeHandler,
-  getSlideObjState,
-  getSlideState,
-  getFirtsSlideID,
-  getLastSelectedSlideID,
-  getNumberSelectedSlide,
-  getNumberSelectedSlideObj,
-  getNextSlideID,
-  getPrevSlideID,
+  uu4v,
+  // isSlideObjSelect,
+  // getObjectsOntoCurrSlide,
+  // isSlideSelect,
+  // getFirtsSlideID,
+  // getSelectedSlideID,
+  // getNumberSelectedSlide,
+  // getNumberSelectedSlideObj,
+  // getNextSlideID,
+  // getPrevSlideID,
   computeSizeAndPosition,
-  recomputeSizeSlideObjects,
   getBoundingRect,
-  getSelectionSlideObj,
 };

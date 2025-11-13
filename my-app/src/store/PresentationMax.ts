@@ -245,5 +245,5 @@ export const dataJSON: Presentation = {
       ],
     },
   ],
-  selection: { selectedObjectID: [], selectedSlideID: ["1"] },
+  selection: { selectedObjectID: [], selectedSlideID: ["0"] },
 };

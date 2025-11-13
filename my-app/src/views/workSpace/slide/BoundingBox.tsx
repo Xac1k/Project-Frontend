@@ -1,8 +1,8 @@
 import { type CSSProperties } from "react";
-import type { SlideObj } from "../../../../store/types";
-import type { Rect, Vector } from "../../../../store/typesView";
-import { getBoundingRect } from "../../../../store/functions";
+import type { Rect, Vector } from "../../../store/typesView";
+import { getBoundingRect } from "../../../store/functions";
 import styles from "./BoundingBox.module.css";
+import { useAppSelector } from "../../../store/store";
 
 type CreateStyles = {
   styleLeft: React.CSSProperties;
@@ -150,18 +150,14 @@ function getBottomBorder(boundingRect: Rect) {
   return boundingRect.y + boundingRect.h - 20;
 }
 
-function getBoundingRectWithMinSize(deltaSize: Rect, boundingRect: Rect) {
+function getBoundingRectWithMinSize(deltaSize: Rect, delta: Vector, boundingRect: Rect) {
   const side = getSideOfChanging(deltaSize);
   const correctedBoundingRect: Rect = {
-    x: boundingRect.x,
-    y: boundingRect.y,
-    w: boundingRect.w,
-    h: boundingRect.h,
+    x: boundingRect.x + deltaSize.x,
+    y: boundingRect.y + deltaSize.y,
+    w: boundingRect.w + deltaSize.w,
+    h: boundingRect.h + deltaSize.h,
   };
-  correctedBoundingRect.h = boundingRect.h + deltaSize.h;
-  correctedBoundingRect.w = boundingRect.w + deltaSize.w;
-  correctedBoundingRect.x = boundingRect.x + deltaSize.x;
-  correctedBoundingRect.y = boundingRect.y + deltaSize.y;
 
   switch (side) {
     case "left":
@@ -209,25 +205,27 @@ function getBoundingRectWithMinSize(deltaSize: Rect, boundingRect: Rect) {
       }
       break;
   }
+  correctedBoundingRect.x += delta.x;
+  correctedBoundingRect.y += delta.y;
+
   return correctedBoundingRect;
 }
 
 type BoundingBoxProps = {
-  slideObjects: SlideObj[];
   deltaSize: Rect;
-  selectionSlideObjects: string[];
   delta: Vector;
   handlerInitResize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
-function BoundingBox({ slideObjects, deltaSize, selectionSlideObjects, delta, handlerInitResize }: BoundingBoxProps) {
-  const selectedSlideObjects = slideObjects.filter((slideObj) => selectionSlideObjects.includes(slideObj.id));
-  const boundingRect = getBoundingRectWithMinSize(deltaSize, getBoundingRect(selectedSlideObjects));
-  boundingRect.x += delta.x;
-  boundingRect.y += delta.y;
+function BoundingBox({ deltaSize, delta, handlerInitResize }: BoundingBoxProps) {
+  const selection = useAppSelector((state) => state.selection);
+  const slides = useAppSelector((state) => state.slides);
+  const currSlideID = selection.selectedSlideID.at(-1) ?? "";
+  const slideObjects = slides.find((slide) => slide.id === currSlideID)?.slideObjects ?? [];
+  const selectedSlideObjects = slideObjects?.filter((slideObj) => selection.selectedObjectID.includes(slideObj.id));
+  const boundingRect = getBoundingRectWithMinSize(deltaSize, delta, getBoundingRect(selectedSlideObjects));
 
   const btnStyles = createStyles(boundingRect);
   const style: CSSProperties = {
-    position: `absolute`,
     top: `${boundingRect.y}px`,
     left: `${boundingRect.x}px`,
     width: `${boundingRect.w}px`,

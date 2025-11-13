@@ -1,54 +1,47 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { dispatch, getLastSelectedSlideID, getSelectionSlideObj } from "../../../../store/functions";
-import { displaceSlideObj } from "../../../../store/types";
-import type { StateWorkZone } from "../../src/WorkSpace";
-import { canDragAndDrop } from "../../../../store/Validation";
-import type { Vector } from "../../../../store/typesView";
+import type { Vector } from "../../store/typesView";
+import { useAppActions, useAppSelector } from "../../store/store";
 
-type createDragAndDropHandleProps = {
-  stateWorkZone: React.RefObject<StateWorkZone>;
-};
-function useDnD({ stateWorkZone }: createDragAndDropHandleProps) {
+function useDnD() {
   const [delta, setDelta] = useState<Vector>({ x: 0, y: 0 });
   const initialPosition = useRef<Vector>({ x: 0, y: 0 });
+  const { displaceSlideObj } = useAppActions();
+  const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
+  const selectedSlideIds = useAppSelector((state) => state.selection.selectedSlideID);
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     initialPosition.current = { x: e.clientX, y: e.clientY };
   }, []);
 
   const onMouseMove = useCallback((e: MouseEvent) => {
-    if (canDragAndDrop(stateWorkZone)) {
-      const delta = { x: e.clientX - initialPosition.current.x, y: e.clientY - initialPosition.current.y };
-      setDelta(delta);
-      stateWorkZone.current.stateDnD.active = true;
-    }
+    const delta = { x: e.clientX - initialPosition.current.x, y: e.clientY - initialPosition.current.y };
+    setDelta(delta);
   }, []);
 
   const onMouseUp = useCallback(() => {
-    if (canDragAndDrop(stateWorkZone)) {
-      dispatch(displaceSlideObj, { slideID: getLastSelectedSlideID(), slideObjectsID: getSelectionSlideObj(), shift: delta });
-      setDelta({ x: 0, y: 0 });
-      stateWorkZone.current.stateDnD.active = false;
-    }
-  }, [delta]);
+    displaceSlideObj({ slideID: selectedSlideIds.at(-1) ?? "", slideObjectsID: selectedObjIDs, shift: delta });
+    setDelta({ x: 0, y: 0 });
+  }, [delta, selectedObjIDs, selectedSlideIds]);
 
-  const handlerInitDnD = useDragAndDropDummy({ onMouseDown, onMouseMove, onMouseUp });
+  const handlerInitDnD = useDragAndDropPattern({ onMouseDown, onMouseMove, onMouseUp });
   return { handlerInitDnD, delta };
 }
 
 type DnDDummy = {
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onMouseMove: (e: MouseEvent) => void;
   onMouseUp: (e: MouseEvent) => void;
 };
-function useDragAndDropDummy(Handlers: DnDDummy) {
+function useDragAndDropPattern(Handlers: DnDDummy) {
   const isStarted = useRef(false);
   const isMoving = useRef(false);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       isStarted.current = true;
-      Handlers.onMouseDown(e);
+      if (Handlers.onMouseDown) {
+        Handlers.onMouseDown(e);
+      }
       e.preventDefault();
     },
     [Handlers.onMouseDown],
@@ -90,4 +83,4 @@ function useDragAndDropDummy(Handlers: DnDDummy) {
   return onMouseDown;
 }
 
-export { useDnD, useDragAndDropDummy };
+export { useDnD, useDragAndDropPattern as useDragAndDropDummy };

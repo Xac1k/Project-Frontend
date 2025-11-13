@@ -1,40 +1,33 @@
-import ToolbarBtn from "../../../toolbarButton/ToolbarButton";
+import ToolbarBtn from "../../../toolbar/toolbarButton/ToolbarButton";
 import { IconDel } from "./iconDel";
 import { IconPlus } from "./iconPlus";
 import SlideSelection from "./toolbarSelection.module.css";
-import { addSlide, removeSlide, blankSlide, setSlideAsUnselected } from '../../../../store/types';
-import { dispatch, getUniqID} from '../../../../store/functions';
+import { useAppActions, useAppSelector } from "../../../../store/store";
 
-
-type ToolbarCollectionProps = {
-  selectedSlides: string[]
-}
-
-export default function ToolbarCollection({selectedSlides}: ToolbarCollectionProps) {
-
+export default function ToolbarCollection() {
   const onClickHandleAdd = () => {
     console.log("Добавление слайда");
-    dispatch(addSlide, {slide: blankSlide, slideID: getUniqID(), insertionID: null})
+    const { addSlide } = useAppActions();
+    addSlide({});
   };
 
   const onClickHandleDel = () => {
     console.log("Удаление слайда");
-    selectedSlides.forEach((slideID)=>{
+    const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
+
+    const { setSlideAsUnselected, removeSlide } = useAppActions();
+    selectedObjIDs.forEach((slideID) => {
       const id = slideID;
-      const properties = {slideID: id}
-      dispatch(setSlideAsUnselected, properties)
-      dispatch(removeSlide, properties)
+      const properties = { slideID: id };
+      setSlideAsUnselected(properties);
     });
+    removeSlide({ slideID: selectedObjIDs });
   };
 
   return (
     <div className={SlideSelection.toolbar}>
-      <ToolbarBtn
-        onClickHandle={onClickHandleAdd}
-      >{IconPlus()}</ToolbarBtn>
-      <ToolbarBtn
-        onClickHandle={onClickHandleDel}
-      >{IconDel()}</ToolbarBtn>
+      <ToolbarBtn onClickHandle={onClickHandleAdd}>{IconPlus()}</ToolbarBtn>
+      <ToolbarBtn onClickHandle={onClickHandleDel}>{IconDel()}</ToolbarBtn>
     </div>
   );
 }

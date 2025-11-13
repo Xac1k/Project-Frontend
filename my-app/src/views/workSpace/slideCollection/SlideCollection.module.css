@@ -1,5 +1,6 @@
 .SlideCollention {
   display: grid;
+  position: relative;
   background-color: #afafaf;
   width: 400px;
   height: calc(100vh - 175px);
@@ -18,8 +19,12 @@
   border-radius: 50px;
 }
 
-.EltSlideCollection {
-  overflow: hidden;
-  width: 370px;
-  height: 235px;
+.InnerELt_Selected {
+  box-shadow: 0 0 0 5px #ea59287d;
+}
+
+.InnerELt_Moving {
+  position: absolute;
+  margin-left: 17px;
+  transform-origin: left top;
 }

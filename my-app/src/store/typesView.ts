@@ -10,4 +10,8 @@ type Vector = {
   y: number;
 };
 
-export type { Rect, Vector };
+type Line = {
+  y: number;
+};
+
+export type { Rect, Vector, Line };

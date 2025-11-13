@@ -1,5 +1,4 @@
-import { dispatch } from "../../store/functions";
-import { changeTitle } from "../../store/types";
+import { useAppActions } from "../../../store/store";
 import styles from "./Toolbarnputs.module.css";
 
 export default function ToolbarInput() {
@@ -10,7 +9,8 @@ export default function ToolbarInput() {
       onInput={(event) => {
         const target = event.target as HTMLInputElement;
         console.log(target.value);
-        dispatch(changeTitle, {name: target.value});
+        const { setTitle } = useAppActions();
+        setTitle({ name: target.value });
       }}
       defaultValue="Новая презентация"
     ></input>

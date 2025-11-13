@@ -1,20 +1,14 @@
-import type { Presentation } from "./store/types";
-import { WorkSpace } from "./views/workSpace/src/WorkSpace";
+import { WorkSpace } from "./views/workSpace/WorkSpace";
 import Toolbar from "./views/toolbar/Toolbar";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
-type AppProps = {
-  presentation: Presentation;
-};
-
-function App(props: AppProps) {
+function App() {
   return (
-    <>
-      <Toolbar></Toolbar>
-      <WorkSpace
-        selection={props.presentation.selection}
-        slides={props.presentation.slides}
-      ></WorkSpace>
-    </>
+    <Provider store={store}>
+      <Toolbar />
+      <WorkSpace />
+    </Provider>
   );
 }
 
