@@ -47,9 +47,9 @@ export type SizeData = {
 };
 
 function useReSize() {
-  const slides = useAppSelector((state) => state.slides);
-  const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
-  const selectedIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const slides = useAppSelector((state) => state.present.slides);
+  const selectedObjIDs = useAppSelector((state) => state.present.selection.selectedObjectID);
+  const selectedIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   const currSlide = slides.filter((slide) => selectedIDs.includes(slide.id)).at(-1);
   const [deltaSize, setDeltaSize] = useState<Rect>(emptyRect);
   const initialPosition = useRef<Vector>({ x: 0, y: 0 });
@@ -78,10 +78,9 @@ function useReSize() {
     const boundingRect = getBoundingRect(selectedSlideObjectsData);
     const payloads: SetSizeAndPositionProps[] = [];
     selectedSlideObjectsData.forEach((slideObj) => {
-      const newSize = computeSizeAndPosition(boundingRect, deltaSize, side.current, slideObj);
+      const newSize = computeSizeAndPosition(boundingRect, deltaSize, slideObj, side.current);
       payloads.push({ slideObjID: slideObj.id, ...newSize });
     });
-    console.log(currSlide.id);
     setSizeAndPositionArray({ slideID: currSlide.id, payloads: payloads });
     setDeltaSize(emptyRect);
   }, [deltaSize, currSlide]);

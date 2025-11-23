@@ -29,13 +29,11 @@ type createDragAndDropHandleProps = {
 };
 function useMoveSlide({ slideCollentionRef }: createDragAndDropHandleProps) {
   const [cursor, setCursor] = useState<Line>({ y: 0 });
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   const { insertSlidesOntoLayer } = useAppActions();
 
   const onMouseMove = useCallback((e: MouseEvent) => {
     const cursor = { y: e.clientY };
-    // if (window.innerHeight - 200 < e.clientY && slideCollentionRef.current) slideCollentionRef.current.scrollTop += 10;
-    // if (-200 < e.clientY && slideCollentionRef.current) slideCollentionRef.current.scrollTop -= 10;
     setCursor(cursor);
   }, []);
 

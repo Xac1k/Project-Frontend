@@ -1,5 +1,5 @@
 import type { Picture, TextPlain } from "../../../../store/types";
-import type { Vector } from "../../../../store/typesView";
+import type { Rect, Vector } from "../../../../store/typesView";
 import { ImgPlain, type ImageObjectProps } from "./ImgPlain";
 import { type TextObjectProps, Text } from "./TextPlain";
 
@@ -19,15 +19,16 @@ type SlideObjectProps = {
   onDoubleClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   isSelected?: boolean;
   delta?: Vector;
+  deltaSize?: Rect;
 };
 
 function SlideObject(props: SlideObjectProps) {
   if (isTextPlain(props)) {
-    return <Text {...props}></Text>;
+    return <Text {...props} />;
   }
 
   if (isPicture(props)) {
-    return <ImgPlain {...props}></ImgPlain>;
+    return <ImgPlain {...props} />;
   }
   return <></>;
 }

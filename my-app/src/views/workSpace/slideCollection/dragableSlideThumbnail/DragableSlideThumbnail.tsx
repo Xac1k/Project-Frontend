@@ -14,10 +14,10 @@ type DragableSlideThublnailProps = {
   parent: React.RefObject<HTMLDivElement | null>;
 };
 function DragableSlideThumblnail({ slide, initUseMoveSlideHandler, cursor, parent }: DragableSlideThublnailProps) {
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   let className = selectedSlideIDs.includes(slide.id) ? styles.InnerELt_Selected : "";
   className += " " + (selectedSlideIDs.includes(slide.id) && cursor.y !== 0 ? styles.InnerELt_Moving : "");
-  const slides = useAppSelector((state) => state.slides);
+  const slides = useAppSelector((state) => state.present.slides);
 
   const arraySelectedSlidesInOrderSlidesForShowing = slides.filter((slide) => selectedSlideIDs.includes(slide.id)); //TODO вынести в hooks
   const indexSelectedSlide = arraySelectedSlidesInOrderSlidesForShowing.findIndex((selectedSlide) => selectedSlide.id === slide.id);

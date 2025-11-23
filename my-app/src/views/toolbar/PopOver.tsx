@@ -15,7 +15,7 @@ type PopOverBackgroundProps = {
 function PopOverCreatingImage(props: PopOverProps) {
   const src = useRef<HTMLInputElement>(null);
   const { addSlideObject } = useAppActions();
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   if (!props.isHidden) {
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key == "Enter") {
@@ -44,7 +44,7 @@ function PopOverCreatingImage(props: PopOverProps) {
 function PopOverCreatingText(props: PopOverProps) {
   const text = useRef<HTMLInputElement>(null);
   const { addSlideObject } = useAppActions();
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key == "Enter") {
       const textContent = text.current?.value;
@@ -64,7 +64,7 @@ function PopOverCreatingText(props: PopOverProps) {
 
 function PopOverColor(props: PopOverBackgroundProps) {
   const { setBackground } = useAppActions();
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   if (!props.isHidden) {
     return (
       <>
@@ -86,7 +86,7 @@ function PopOverColor(props: PopOverBackgroundProps) {
 function PopOverImg(props: PopOverBackgroundProps) {
   const SRC = /http[\n\w\\\/\:.?=\-&]*/g;
   const { setBackground } = useAppActions();
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   if (!props.isHidden) {
     return (
       <>

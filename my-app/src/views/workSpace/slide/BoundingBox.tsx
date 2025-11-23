@@ -1,6 +1,6 @@
 import { type CSSProperties } from "react";
 import type { Rect, Vector } from "../../../store/typesView";
-import { getBoundingRect } from "../../../store/functions";
+import { getBoundingRect, getSideOfChanging } from "../../../store/functions";
 import styles from "./BoundingBox.module.css";
 import { useAppSelector } from "../../../store/store";
 
@@ -109,39 +109,6 @@ function ReSizePoints({ btnStyles, reSizeInitHandler }: ReSizePointsProps) {
   );
 }
 
-function getSideOfChanging(deltaSize: Rect) {
-  const isXEmpty = deltaSize.x == 0;
-  const isYEmpty = deltaSize.y == 0;
-  const isWEmpty = deltaSize.w == 0;
-  const isHEmpty = deltaSize.h == 0;
-
-  if (!isXEmpty && !isWEmpty && !isHEmpty && isYEmpty) {
-    return "down-left";
-  }
-  if (!isXEmpty && !isWEmpty && isHEmpty && isYEmpty) {
-    return "left";
-  }
-  if (isXEmpty && isYEmpty && !isWEmpty && !isHEmpty) {
-    return "down-right";
-  }
-  if (isXEmpty && isYEmpty && !isWEmpty && isHEmpty) {
-    return "right";
-  }
-  if (isXEmpty && isYEmpty && isWEmpty && !isHEmpty) {
-    return "down";
-  }
-  if (isXEmpty && !isYEmpty && !isWEmpty && !isHEmpty) {
-    return "up-right";
-  }
-  if (isXEmpty && !isYEmpty && isWEmpty && !isHEmpty) {
-    return "top";
-  }
-  if (!isXEmpty && !isYEmpty && !isWEmpty && !isHEmpty) {
-    return "up-left";
-  }
-  return "none";
-}
-
 function getRightBorder(boundingRect: Rect) {
   return boundingRect.x + boundingRect.w - 20;
 }
@@ -217,8 +184,8 @@ type BoundingBoxProps = {
   handlerInitResize: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 function BoundingBox({ deltaSize, delta, handlerInitResize }: BoundingBoxProps) {
-  const selection = useAppSelector((state) => state.selection);
-  const slides = useAppSelector((state) => state.slides);
+  const selection = useAppSelector((state) => state.present.selection);
+  const slides = useAppSelector((state) => state.present.slides);
   const currSlideID = selection.selectedSlideID.at(-1) ?? "";
   const slideObjects = slides.find((slide) => slide.id === currSlideID)?.slideObjects ?? [];
   const selectedSlideObjects = slideObjects?.filter((slideObj) => selection.selectedObjectID.includes(slideObj.id));

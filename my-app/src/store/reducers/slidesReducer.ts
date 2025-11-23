@@ -20,7 +20,13 @@ export const slidesSlice = createSlice({
       });
     },
     removeSlide: (state, action: PayloadAction<RemoveSlideProps>) => {
-      state = state.filter((slide) => !action.payload.slideID.includes(slide.id));
+      const slideIDsToRemove = action.payload.slideID;
+
+      for (let i = state.length - 1; i >= 0; i--) {
+        if (slideIDsToRemove.includes(state[i].id)) {
+          state.splice(i, 1);
+        }
+      }
     },
     insertSlidesOntoLayer: (state, action: PayloadAction<InsertSlidesPayload>) => {
       const insertionSlideArrayID = state.findIndex((slide) => slide.id === action.payload.insertionSlideID);

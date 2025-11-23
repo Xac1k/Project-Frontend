@@ -137,6 +137,10 @@ type setSlideAs = {
   slideID: string;
 };
 
+type setSlidesAs = {
+  slideIDs: string[];
+};
+
 type setSlideObjAs = {
   slideObjID: string;
 };
@@ -165,6 +169,7 @@ export type {
   setSlideAs,
   setSlideObjAs,
   SelectFromToProps,
+  setSlidesAs,
 };
 
 const blankSlide: Slide = {

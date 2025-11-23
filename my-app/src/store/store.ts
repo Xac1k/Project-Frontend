@@ -1,4 +1,4 @@
-import { bindActionCreators, configureStore } from "@reduxjs/toolkit";
+import { bindActionCreators, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import selection from "./reducers/selectionReducer";
 import title from "./reducers/titleReducer";
@@ -7,14 +7,18 @@ import { slidesActions } from "./reducers/slidesReducer";
 import { titleActions } from "./reducers/titleReducer";
 import { selectionActions } from "./reducers/selectionReducer";
 import { dataJSON } from "./PresentationMax";
+import { redoAction, undoable, undoAction } from "./reducers/undoable";
+
+const presentationReducer = combineReducers({
+  selection,
+  title,
+  slides,
+});
+
+export type PresentationState = ReturnType<typeof presentationReducer>;
 
 export const store = configureStore({
-  preloadedState: dataJSON,
-  reducer: {
-    selection,
-    title,
-    slides,
-  },
+  reducer: undoable(presentationReducer, dataJSON),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -25,5 +29,5 @@ export const useAppSelector = useSelector.withTypes<RootState>();
 
 export const useAppActions = () => {
   const dispatch = useDispatch();
-  return bindActionCreators({ ...slidesActions, ...selectionActions, ...titleActions }, dispatch);
+  return bindActionCreators({ ...slidesActions, ...selectionActions, ...titleActions, undoAction, redoAction }, dispatch);
 };

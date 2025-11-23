@@ -2,7 +2,7 @@ import { SlideWorkSpace } from "./slide/Slide";
 import { SlideCollection } from "./slideCollection/SlideCollection";
 import style from "./WorkSpace.module.css";
 import { useMemo } from "react";
-import { useAppActions, useAppSelector } from "../../store/store";
+import { useAppSelector } from "../../store/store";
 
 export type StateWorkZone = {
   edit: boolean;
@@ -17,13 +17,9 @@ export type StateWorkZone = {
 };
 
 export function WorkSpace() {
-  const { setSlideAsSelected } = useAppActions();
-  const selectedSlideID = useAppSelector((state) => state.selection.selectedSlideID);
-  const slides = useAppSelector((state) => state.slides);
+  const selectedSlideID = useAppSelector((state) => state.present.selection.selectedSlideID);
+  const slides = useAppSelector((state) => state.present.slides);
 
-  if (selectedSlideID.length == 0 && slides.length != 0) {
-    setSlideAsSelected({ slideID: slides.at(0)?.id ?? "" });
-  }
   const slideForShowing = useMemo(() => {
     const slideID = selectedSlideID.at(-1);
     const slideForShowing = slides.find((slide) => slide.id == slideID);

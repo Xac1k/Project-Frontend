@@ -1,17 +1,20 @@
 import { useCallback } from "react";
 import { useAppActions, useAppSelector } from "../../../../store/store";
 import { type SlideObj } from "../../../../store/types";
-import type { Vector } from "../../../../store/typesView";
+import type { Rect, Vector } from "../../../../store/typesView";
 import { SlideObject } from "./SlideObj";
+import { useSelectedObj } from "../../../../store/hooks/useSelectedObj";
+import { computeSizeAndPosition, getBoundingRect } from "../../../../store/functions";
 
 type DragableSlideObjectProps = {
   slideObj: SlideObj;
   delta: Vector;
+  deltaSize: Rect;
   handlerInitDnD: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
-function DragableSlideObject({ handlerInitDnD, slideObj, delta }: DragableSlideObjectProps) {
+function DragableSlideObject({ handlerInitDnD, slideObj, delta, deltaSize }: DragableSlideObjectProps) {
   const { setSlideObjAsSelected, setSlideObjAsSingleSelected } = useAppActions();
-  const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
+  const selectedObjIDs = useAppSelector((state) => state.present.selection.selectedObjectID);
 
   const selectSingle = (slideObjID: string) => setSlideObjAsSingleSelected({ slideObjID: slideObjID });
 
@@ -48,10 +51,14 @@ function DragableSlideObject({ handlerInitDnD, slideObj, delta }: DragableSlideO
     }
   };
 
+  const selectedObjectsData = useSelectedObj() ?? [];
+  const boundingRect = getBoundingRect(selectedObjectsData);
+  const newSize = selectedObjIDs.includes(slideObj.id) ? computeSizeAndPosition(boundingRect, deltaSize, slideObj) : slideObj; //TODO вычисление минимальных размеров
+
   return (
     <SlideObject
       key={slideObj.id}
-      slideObj={slideObj}
+      slideObj={{ ...slideObj, ...newSize }}
       delta={delta}
       onMouseDown={onClickHandle}
       onMouseUp={onMouseUp}

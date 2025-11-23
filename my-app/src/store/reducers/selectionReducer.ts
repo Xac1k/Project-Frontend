@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { SelectFromToProps, Selection, setSlideAs, setSlideObjAs } from "../types";
+import type { SelectFromToProps, Selection, setSlideAs, setSlideObjAs, setSlidesAs } from "../types";
 
 const initialState: Selection = {
   selectedObjectID: [],
@@ -15,9 +15,11 @@ export const selectionSlice = createSlice({
       state.selectedObjectID = [action.payload.slideObjID];
     },
     setSlideAsSingleSelected: (state, action: PayloadAction<setSlideAs>) => {
+      state.selectedObjectID = [];
       state.selectedSlideID = [action.payload.slideID];
     },
     selectSlideFromTo: (state, action: PayloadAction<SelectFromToProps>) => {
+      state.selectedObjectID = [];
       const startSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.startSlideID);
       const endSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.endSlideID);
 
@@ -29,10 +31,16 @@ export const selectionSlice = createSlice({
       }
     },
     setSlideAsSelected: (state, action: PayloadAction<setSlideAs>) => {
+      state.selectedObjectID = [];
       state.selectedSlideID.push(action.payload.slideID);
     },
     setSlideAsUnselected: (state, action: PayloadAction<setSlideAs>) => {
+      state.selectedObjectID = [];
       state.selectedSlideID = state.selectedSlideID.filter((slideID) => slideID != action.payload.slideID);
+    },
+    setSlidesAsUnselected: (state, action: PayloadAction<setSlidesAs>) => {
+      state.selectedObjectID = [];
+      state.selectedSlideID = state.selectedSlideID.filter((slideID) => !action.payload.slideIDs.includes(slideID));
     },
 
     setSlideObjAsSelected: (state, action: PayloadAction<setSlideObjAs>) => {
@@ -40,12 +48,6 @@ export const selectionSlice = createSlice({
     },
     setSlideObjAsUnselected: (state, action: PayloadAction<setSlideObjAs>) => {
       state.selectedObjectID = state.selectedObjectID.filter((slideID) => slideID != action.payload.slideObjID);
-    },
-    clearSlideSelected: (state) => {
-      state.selectedSlideID = [];
-    },
-    clearSlideObjSelected: (state) => {
-      state.selectedObjectID = [];
     },
   },
 });

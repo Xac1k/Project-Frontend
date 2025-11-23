@@ -3,8 +3,8 @@ import { useAppActions, useAppSelector } from "../../store/store";
 
 function useKeyboardDelSlideObj() {
   const { removeSlideObjects } = useAppActions();
-  const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedObjIDs = useAppSelector((state) => state.present.selection.selectedObjectID);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   const slideID = selectedSlideIDs.at(-1) ?? "";
 
   useEffect(() => {

@@ -6,8 +6,8 @@ function useDnD() {
   const [delta, setDelta] = useState<Vector>({ x: 0, y: 0 });
   const initialPosition = useRef<Vector>({ x: 0, y: 0 });
   const { displaceSlideObj } = useAppActions();
-  const selectedObjIDs = useAppSelector((state) => state.selection.selectedObjectID);
-  const selectedSlideIds = useAppSelector((state) => state.selection.selectedSlideID);
+  const selectedObjIDs = useAppSelector((state) => state.present.selection.selectedObjectID);
+  const selectedSlideIds = useAppSelector((state) => state.present.selection.selectedSlideID);
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     initialPosition.current = { x: e.clientX, y: e.clientY };

@@ -144,8 +144,43 @@ function getCoeficientsForShiftWhenResize(side: string) {
   return { isLeft, isTop };
 }
 
-function computeSizeAndPosition(initialBndRect: Rect, deltaSize: Rect, side: string, slideObj: TextPlain | Picture) {
+function getSideOfChanging(deltaSize: Rect) {
+  const isXEmpty = deltaSize.x == 0;
+  const isYEmpty = deltaSize.y == 0;
+  const isWEmpty = deltaSize.w == 0;
+  const isHEmpty = deltaSize.h == 0;
+
+  if (!isXEmpty && !isWEmpty && !isHEmpty && isYEmpty) {
+    return "down-left";
+  }
+  if (!isXEmpty && !isWEmpty && isHEmpty && isYEmpty) {
+    return "left";
+  }
+  if (isXEmpty && isYEmpty && !isWEmpty && !isHEmpty) {
+    return "down-right";
+  }
+  if (isXEmpty && isYEmpty && !isWEmpty && isHEmpty) {
+    return "right";
+  }
+  if (isXEmpty && isYEmpty && isWEmpty && !isHEmpty) {
+    return "down";
+  }
+  if (isXEmpty && !isYEmpty && !isWEmpty && !isHEmpty) {
+    return "up-right";
+  }
+  if (isXEmpty && !isYEmpty && isWEmpty && !isHEmpty) {
+    return "top";
+  }
+  if (!isXEmpty && !isYEmpty && !isWEmpty && !isHEmpty) {
+    return "up-left";
+  }
+  return "none";
+}
+
+function computeSizeAndPosition(initialBndRect: Rect, deltaSize: Rect | undefined, slideObj: TextPlain | Picture, side: string | undefined = undefined) {
   let newObjectSize: { x: number; y: number; w: number; h: number };
+  deltaSize = deltaSize ?? { x: 0, y: 0, w: 0, h: 0 };
+  side = side ?? getSideOfChanging(deltaSize);
   const bounds = initialBndRect;
 
   const { isLeft, isTop } = getCoeficientsForShiftWhenResize(side);
@@ -194,17 +229,4 @@ function getBoundingRect(slideObjects: SlideObj[]) {
   };
 }
 
-export {
-  uu4v,
-  // isSlideObjSelect,
-  // getObjectsOntoCurrSlide,
-  // isSlideSelect,
-  // getFirtsSlideID,
-  // getSelectedSlideID,
-  // getNumberSelectedSlide,
-  // getNumberSelectedSlideObj,
-  // getNextSlideID,
-  // getPrevSlideID,
-  computeSizeAndPosition,
-  getBoundingRect,
-};
+export { uu4v, computeSizeAndPosition, getBoundingRect, getSideOfChanging };

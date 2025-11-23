@@ -8,6 +8,7 @@ import { useReSize } from "../../hooks/DragAndDropSize";
 import { DragableSlideObject } from "./slideObj/DragableSlideObj";
 import { useKeyboardDelSlideObj } from "../../hooks/DeleteSlideObj";
 import { useAppActions, useAppSelector } from "../../../store/store";
+import { standartSlideSize } from "../../../store/constant";
 
 type SlideProps = {
   slide: Slide;
@@ -33,7 +34,7 @@ function SlideWorkSpace({ slide, scale, externalStyle }: SlideProps) {
       <BoundingBox deltaSize={deltaSize} delta={delta} handlerInitResize={handlerInitResize}></BoundingBox>
 
       {slide.slideObjects.map((slideObj) => {
-        return <DragableSlideObject {...{ slideObj, handlerInitDnD, delta }} key={slideObj.id} />;
+        return <DragableSlideObject {...{ slideObj, handlerInitDnD, delta, deltaSize }} key={slideObj.id} />; // Динамческая передача размера
       })}
     </div>
   );
@@ -51,8 +52,8 @@ function SlideThumblnail({ slide, scale, initUseMoveSlideHandler, externalStyle,
   externalClassName = externalClassName ?? "";
   externalClassName = " " + externalClassName;
 
-  const selectedSlideIDs = useAppSelector((state) => state.selection.selectedSlideID);
-  const slides = useAppSelector((state) => state.slides);
+  const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
+  const slides = useAppSelector((state) => state.present.slides);
 
   const { selectSlideFromTo, setSlideAsSelected, setSlideAsSingleSelected, setSlideAsUnselected } = useAppActions();
 
@@ -101,8 +102,8 @@ function SlideThumblnail({ slide, scale, initUseMoveSlideHandler, externalStyle,
 
   const style: React.CSSProperties = {
     ...externalStyle,
-    width: `${1011 * scale}px`,
-    height: `${643 * scale}px`,
+    width: `${standartSlideSize.w * scale}px`,
+    height: `${standartSlideSize.h * scale}px`,
     backgroundColor: slide.background.type == "color" ? slide.background.color : undefined,
     backgroundImage: slide.background.type == "image" ? `url(${slide.background.src})` : undefined,
   };

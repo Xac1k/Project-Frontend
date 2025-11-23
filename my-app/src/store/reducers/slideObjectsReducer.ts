@@ -63,7 +63,6 @@ export default {
   },
   setSizeAndPositionArray: (state: SlidesState, action: PayloadAction<SetSizeAndPositionArrayProps>) => {
     const slideArrayID = state.findIndex((slide) => slide.id === action.payload.slideID);
-    console.log(slideArrayID);
     for (const payload of action.payload.payloads) {
       const slideObjArrayID = state[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === payload.slideObjID);
       state[slideArrayID].slideObjects[slideObjArrayID] = {
