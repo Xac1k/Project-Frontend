@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
-import { standartSlideSize } from "../../../../store/constant";
-import type { Slide } from "../../../../store/types";
-import type { Line } from "../../../../store/typesView";
+import { standartSlideSize } from "../../../../../store/constant";
+import type { Slide } from "../../../../../store/types";
+import type { Line } from "../../../../../store/typesView";
 import { SlideThumblnail } from "../../slide/Slide";
 import { heightToolbar, heightToolbarCollection, offsetBetweenBundle, scaleThumblnail } from "../SlideCollection";
 import styles from "../SlideCollection.module.css";
-import { useAppSelector } from "../../../../store/store";
+import { useAppSelector } from "../../../../../store/store";
 
 type DragableSlideThublnailProps = {
   slide: Slide;

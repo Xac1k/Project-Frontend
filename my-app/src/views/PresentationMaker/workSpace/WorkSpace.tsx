@@ -2,7 +2,7 @@ import { SlideWorkSpace } from "./slide/Slide";
 import { SlideCollection } from "./slideCollection/SlideCollection";
 import style from "./WorkSpace.module.css";
 import { useMemo } from "react";
-import { useAppSelector } from "../../store/store";
+import { useAppSelector } from "../../../store/store";
 
 export type StateWorkZone = {
   edit: boolean;

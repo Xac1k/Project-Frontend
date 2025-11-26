@@ -1,8 +1,8 @@
 import { type CSSProperties } from "react";
-import type { Rect, Vector } from "../../../store/typesView";
-import { getBoundingRect, getSideOfChanging } from "../../../store/functions";
+import type { Rect, Vector } from "../../../../store/typesView";
+import { getBoundingRect, getSideOfChanging } from "../../../../store/functions";
 import styles from "./BoundingBox.module.css";
-import { useAppSelector } from "../../../store/store";
+import { useAppSelector } from "../../../../store/store";
 
 type CreateStyles = {
   styleLeft: React.CSSProperties;

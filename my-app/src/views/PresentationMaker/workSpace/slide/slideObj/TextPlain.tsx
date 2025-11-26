@@ -1,7 +1,7 @@
 import type React from "react";
-import { type TextPlain } from "../../../../store/types";
+import { type TextPlain } from "../../../../../store/types";
 import styles from "./TextPlain.module.css";
-import type { Rect } from "../../../../store/typesView";
+import type { Rect } from "../../../../../store/typesView";
 
 type TextObjectProps = {
   slideObj: TextPlain;

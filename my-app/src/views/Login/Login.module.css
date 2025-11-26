@@ -1,0 +1,51 @@
+.Background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.FormLogin {
+  width: 20vw;
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  gap: 25px;
+}
+
+.Button {
+  color: rgb(0, 0, 0);
+  border-radius: 25px;
+  box-sizing: border-box;
+  border: 2px solid black;
+
+  padding: 12px 24px;
+  height: 44px;
+  width: fit-content;
+
+  border-radius: 25px;
+  border: 2px solid transparent;
+
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.Button:hover {
+  border: 2px solid rgb(0, 60, 255);
+}
+
+.Link {
+  font-size: 12px;
+  text-decoration: underline;
+  color: cornflowerblue;
+  cursor: pointer;
+}

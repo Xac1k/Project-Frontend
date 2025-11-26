@@ -1,14 +1,14 @@
-import { type Slide } from "../../../store/types";
+import { type Slide } from "../../../../store/types";
 import styles from "./Slide.module.css";
 import type React from "react";
-import { useDnD } from "../../hooks/DragAndDrop";
+import { useDnD } from "../../../hooks/DragAndDrop";
 import { SlideObject } from "./slideObj/SlideObj";
 import { BoundingBox } from "./BoundingBox";
-import { useReSize } from "../../hooks/DragAndDropSize";
+import { useReSize } from "../../../hooks/DragAndDropSize";
 import { DragableSlideObject } from "./slideObj/DragableSlideObj";
-import { useKeyboardDelSlideObj } from "../../hooks/DeleteSlideObj";
-import { useAppActions, useAppSelector } from "../../../store/store";
-import { standartSlideSize } from "../../../store/constant";
+import { useKeyboardDelSlideObj } from "../../../hooks/DeleteSlideObj";
+import { useAppActions, useAppSelector } from "../../../../store/store";
+import { standartSlideSize } from "../../../../store/constant";
 
 type SlideProps = {
   slide: Slide;

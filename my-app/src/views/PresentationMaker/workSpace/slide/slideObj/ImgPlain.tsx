@@ -1,6 +1,6 @@
-import type { Picture } from "../../../../store/types";
+import type { Picture } from "../../../../../store/types";
 import styles from "./ImgPlain.module.css";
-import type { Rect } from "../../../../store/typesView";
+import type { Rect } from "../../../../../store/typesView";
 
 type ImageObjectProps = {
   slideObj: Picture;

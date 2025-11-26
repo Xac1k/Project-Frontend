@@ -1,4 +1,4 @@
-import { useAppActions } from "../../../store/store";
+import { useAppActions } from "../../../../store/store";
 import styles from "./Toolbarnputs.module.css";
 
 export default function ToolbarInput() {

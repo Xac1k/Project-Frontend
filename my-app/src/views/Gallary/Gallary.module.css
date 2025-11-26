@@ -1,0 +1,35 @@
+.Background {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+
+  justify-content: center;
+  flex-direction: column;
+
+  overflow-y: scroll;
+}
+
+.Line {
+  display: flex;
+  justify-content: space-around;
+}
+
+.PreviewBox {
+  width: 355.94px;
+  height: 251px;
+}
+
+.Preview {
+  width: 355.94px;
+  height: 212px;
+  background-color: #d9d9d9;
+  border-radius: 25px;
+}
+
+.Title {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}

@@ -11,7 +11,10 @@ import { IconImage } from "./toolbarButton/iconImage";
 import { IconRedo } from "./toolbarButton/iconRedo";
 import { IconUndo } from "./toolbarButton/iconUndo";
 import { useState } from "react";
-import { useAppActions } from "../../store/store";
+import { useAppActions } from "../../../store/store";
+import { loginOut } from "../../../signUp";
+import type { propsLogin } from "../../Login/Login";
+import { IconLogOut } from "./toolbarButton/iconLogOut";
 
 const onClickHandleExport = () => {
   console.log("Экспортировать файл");
@@ -21,7 +24,7 @@ const onClickHandleDemo = () => {
   console.log("Демострировать презентацию");
 };
 
-export default function Toolbar() {
+export default function Toolbar(props: propsLogin) {
   const [isHiddenImage, setIsHiddenImage] = useState<boolean>(true);
   const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
   const [isHiddenText, setIsHiddenText] = useState<boolean>(true);
@@ -56,6 +59,10 @@ export default function Toolbar() {
     }
   };
 
+  const onClickHandleLogOut = () => {
+    loginOut(props.setIsLoged);
+  };
+
   return (
     <div className={styles.ToolBar}>
       <div className={styles.EditingToolBar}>
@@ -80,7 +87,11 @@ export default function Toolbar() {
         <ToolbarBtn onClickHandle={onClickHandleUndo}>{IconRedo()}</ToolbarBtn>
         <ToolbarBtn onClickHandle={onClickHandleRedo}>{IconUndo()}</ToolbarBtn>
       </div>
-      <ToolbarDemo onClickHandle={onClickHandleDemo}></ToolbarDemo>
+
+      <div className={styles.RightToolBar}>
+        <ToolbarDemo onClickHandle={onClickHandleDemo}></ToolbarDemo>
+        <ToolbarBtn onClickHandle={onClickHandleLogOut}>{IconLogOut()}</ToolbarBtn>
+      </div>
     </div>
   );
 }

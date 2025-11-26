@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import styles from "./PopOver.module.css";
-import { isURL } from "../../store/Validation";
-import { useAppActions, useAppSelector } from "../../store/store";
+import { isURL } from "../../../store/Validation";
+import { useAppActions, useAppSelector } from "../../../store/store";
 
 type PopOverProps = {
   isHidden: boolean;

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import styles from "./SlideCollection.module.css";
 import ToolbarCollection from "./toolbar/toolBar";
-import { standartSlideSize } from "../../../store/constant";
-import { useMoveSlide } from "../../hooks/DragAndDropSlide";
+import { standartSlideSize } from "../../../../store/constant";
+import { useMoveSlide } from "../../../hooks/DragAndDropSlide";
 import { DragableSlideThumblnail } from "./dragableSlideThumbnail/DragableSlideThumbnail";
-import { useAppSelector } from "../../../store/store";
+import { useAppSelector } from "../../../../store/store";
 
 const widthSlideCollection = 400;
 const marginsSlideCollection = 17;

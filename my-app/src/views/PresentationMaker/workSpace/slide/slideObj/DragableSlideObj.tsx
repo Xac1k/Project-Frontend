@@ -1,10 +1,10 @@
 import { useCallback } from "react";
-import { useAppActions, useAppSelector } from "../../../../store/store";
-import { type SlideObj } from "../../../../store/types";
-import type { Rect, Vector } from "../../../../store/typesView";
+import { useAppActions, useAppSelector } from "../../../../../store/store";
+import { type SlideObj } from "../../../../../store/types";
+import type { Rect, Vector } from "../../../../../store/typesView";
 import { SlideObject } from "./SlideObj";
-import { useSelectedObj } from "../../../../store/hooks/useSelectedObj";
-import { computeSizeAndPosition, getBoundingRect } from "../../../../store/functions";
+import { useSelectedObj } from "../../../../../store/hooks/useSelectedObj";
+import { computeSizeAndPosition, getBoundingRect } from "../../../../../store/functions";
 
 type DragableSlideObjectProps = {
   slideObj: SlideObj;

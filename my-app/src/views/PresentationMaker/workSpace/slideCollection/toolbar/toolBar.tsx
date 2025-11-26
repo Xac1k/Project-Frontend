@@ -2,7 +2,7 @@ import ToolbarBtn from "../../../toolbar/toolbarButton/ToolbarButton";
 import { IconDel } from "./iconDel";
 import { IconPlus } from "./iconPlus";
 import SlideSelection from "./toolbarSelection.module.css";
-import { useAppActions, useAppSelector } from "../../../../store/store";
+import { useAppActions, useAppSelector } from "../../../../../store/store";
 
 export default function ToolbarCollection() {
   const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
