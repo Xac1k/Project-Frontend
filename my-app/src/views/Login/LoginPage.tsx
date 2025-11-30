@@ -28,7 +28,7 @@ function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
         </button>
 
         <div className={styles.Link} onClick={() => setIsCreatingAccount(true)}>
-          LogUp
+          signUp
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "allowJs": true,
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "react", "react-dom"],
     "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,

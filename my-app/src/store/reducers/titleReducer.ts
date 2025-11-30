@@ -1,18 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { SetTitleProps } from "../types";
-const initialState: string = "Введите название";
+import type { Presentation, SetTitleProps } from "../types";
 
-export const TitleSlice = createSlice({
-  name: "title",
-  initialState,
-  reducers: {
-    setTitle: (state, action: PayloadAction<SetTitleProps>) => {
-      state = action.payload.name;
-    },
+export default {
+  setTitle: (state: Presentation, action: PayloadAction<SetTitleProps>) => {
+    state.title = action.payload.name;
   },
-});
-
-export const titleActions = TitleSlice.actions;
-
-export default TitleSlice.reducer;
+};

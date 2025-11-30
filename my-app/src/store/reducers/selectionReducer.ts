@@ -1,57 +1,43 @@
-import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { SelectFromToProps, Selection, setSlideAs, setSlideObjAs, setSlidesAs } from "../types";
+import type { Presentation, SelectFromToProps, setSlideAs, setSlideObjAs, setSlidesAs } from "../types";
 
-const initialState: Selection = {
-  selectedObjectID: [],
-  selectedSlideID: [],
-};
-
-export const selectionSlice = createSlice({
-  name: "selection",
-  initialState,
-  reducers: {
-    setSlideObjAsSingleSelected: (state, action: PayloadAction<setSlideObjAs>) => {
-      state.selectedObjectID = [action.payload.slideObjID];
-    },
-    setSlideAsSingleSelected: (state, action: PayloadAction<setSlideAs>) => {
-      state.selectedObjectID = [];
-      state.selectedSlideID = [action.payload.slideID];
-    },
-    selectSlideFromTo: (state, action: PayloadAction<SelectFromToProps>) => {
-      state.selectedObjectID = [];
-      const startSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.startSlideID);
-      const endSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.endSlideID);
-
-      for (let id = startSlideArrayID; id <= endSlideArrayID; ++id) {
-        state.selectedSlideID.push(action.payload.slides[id].id);
-      }
-      for (let id = startSlideArrayID; id >= endSlideArrayID; --id) {
-        state.selectedSlideID.push(action.payload.slides[id].id);
-      }
-    },
-    setSlideAsSelected: (state, action: PayloadAction<setSlideAs>) => {
-      state.selectedObjectID = [];
-      state.selectedSlideID.push(action.payload.slideID);
-    },
-    setSlideAsUnselected: (state, action: PayloadAction<setSlideAs>) => {
-      state.selectedObjectID = [];
-      state.selectedSlideID = state.selectedSlideID.filter((slideID) => slideID != action.payload.slideID);
-    },
-    setSlidesAsUnselected: (state, action: PayloadAction<setSlidesAs>) => {
-      state.selectedObjectID = [];
-      state.selectedSlideID = state.selectedSlideID.filter((slideID) => !action.payload.slideIDs.includes(slideID));
-    },
-
-    setSlideObjAsSelected: (state, action: PayloadAction<setSlideObjAs>) => {
-      state.selectedObjectID.push(action.payload.slideObjID);
-    },
-    setSlideObjAsUnselected: (state, action: PayloadAction<setSlideObjAs>) => {
-      state.selectedObjectID = state.selectedObjectID.filter((slideID) => slideID != action.payload.slideObjID);
-    },
+export default {
+  setSlideObjAsSingleSelected: (state: Presentation, action: PayloadAction<setSlideObjAs>) => {
+    state.selection.selectedObjectID = [action.payload.slideObjID];
   },
-});
+  setSlideAsSingleSelected: (state: Presentation, action: PayloadAction<setSlideAs>) => {
+    state.selection.selectedObjectID = [];
+    state.selection.selectedSlideID = [action.payload.slideID];
+  },
+  selectSlideFromTo: (state: Presentation, action: PayloadAction<SelectFromToProps>) => {
+    state.selection.selectedObjectID = [];
+    const startSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.startSlideID);
+    const endSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.endSlideID);
 
-export const selectionActions = selectionSlice.actions;
+    for (let id = startSlideArrayID; id <= endSlideArrayID; ++id) {
+      state.selection.selectedSlideID.push(action.payload.slides[id].id);
+    }
+    for (let id = startSlideArrayID; id >= endSlideArrayID; --id) {
+      state.selection.selectedSlideID.push(action.payload.slides[id].id);
+    }
+  },
+  setSlideAsSelected: (state: Presentation, action: PayloadAction<setSlideAs>) => {
+    state.selection.selectedObjectID = [];
+    state.selection.selectedSlideID.push(action.payload.slideID);
+  },
+  setSlideAsUnselected: (state: Presentation, action: PayloadAction<setSlideAs>) => {
+    state.selection.selectedObjectID = [];
+    state.selection.selectedSlideID = state.selection.selectedSlideID.filter((slideID) => slideID != action.payload.slideID);
+  },
+  setSlidesAsUnselected: (state: Presentation, action: PayloadAction<setSlidesAs>) => {
+    state.selection.selectedObjectID = [];
+    state.selection.selectedSlideID = state.selection.selectedSlideID.filter((slideID) => !action.payload.slideIDs.includes(slideID));
+  },
 
-export default selectionSlice.reducer;
+  setSlideObjAsSelected: (state: Presentation, action: PayloadAction<setSlideObjAs>) => {
+    state.selection.selectedObjectID.push(action.payload.slideObjID);
+  },
+  setSlideObjAsUnselected: (state: Presentation, action: PayloadAction<setSlideObjAs>) => {
+    state.selection.selectedObjectID = state.selection.selectedObjectID.filter((slideID) => slideID != action.payload.slideObjID);
+  },
+};

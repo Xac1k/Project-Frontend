@@ -36,7 +36,7 @@ export function undoable(
   return function (state = initialUndoState, action: UnknownAction | UndoActionType | RedoActionType) {
     switch (action.type) {
       case "undo": //отменить
-        if (state.past.length === 0) return state;
+        if (state.past.length === 0 || state.past.at(-1)?.presentationID.length == 0) return state;
         const prev = state.past[state.past.length - 1];
         const newPrev = state.past.slice(0, state.past.length - 1);
 
@@ -66,7 +66,7 @@ export function undoable(
         if (newPresent.slides === state.present.slides && newPresent.title === state.present.title)
           return {
             ...state,
-            present: { ...state.present, selection: newPresent.selection },
+            present: { ...state.present, selection: newPresent.selection, presentationID: newPresent.presentationID },
           };
 
         return {

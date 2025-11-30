@@ -34,7 +34,7 @@ function LogupPage({ setIsCreatingAccount, setIsLoged }: propsLogin) {
           signUp
         </button>
         <div className={styles.Link} onClick={() => setIsCreatingAccount(false)}>
-          LogIn
+          signIn
         </div>
       </div>
     </div>

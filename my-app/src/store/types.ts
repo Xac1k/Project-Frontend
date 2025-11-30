@@ -42,6 +42,7 @@ type Presentation = {
   slides: Slide[];
   title: string;
   selection: Selection;
+  presentationID: string;
 };
 
 export type { Presentation, Selection, Slide, SlideObj, Picture, TextPlain };
@@ -151,6 +152,10 @@ type SelectFromToProps = {
   slides: Slide[];
 };
 
+type setPresentationID = {
+  presentationID: string;
+};
+
 export type {
   SetSizeAndPositionProps,
   SetTitleProps,
@@ -170,6 +175,7 @@ export type {
   setSlideObjAs,
   SelectFromToProps,
   setSlidesAs,
+  setPresentationID,
 };
 
 const blankSlide: Slide = {

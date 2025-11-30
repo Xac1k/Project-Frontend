@@ -29,6 +29,7 @@ export default function Toolbar(props: propsLogin) {
   const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
   const [isHiddenText, setIsHiddenText] = useState<boolean>(true);
   const { redoAction, undoAction } = useAppActions();
+  const { clearPresID } = useAppActions();
 
   const onClickHandleUndo = () => {
     undoAction();
@@ -60,6 +61,7 @@ export default function Toolbar(props: propsLogin) {
   };
 
   const onClickHandleLogOut = () => {
+    clearPresID();
     loginOut(props.setIsLoged);
   };
 

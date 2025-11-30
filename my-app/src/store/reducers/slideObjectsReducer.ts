@@ -9,64 +9,64 @@ import {
   blankText,
   blankImage,
   type SetSizeAndPositionArrayProps,
+  type Presentation,
 } from "../types";
-import type { SlidesState } from "./slidesReducer";
 import { uu4v } from "../functions";
 
 export default {
-  addSlideObject: (state: SlidesState, action: PayloadAction<AddSlideObjectProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
+  addSlideObject: (state: Presentation, action: PayloadAction<AddSlideObjectProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
     const x = action.payload.x ?? blankText.x;
     const y = action.payload.y ?? blankText.y;
     const w = action.payload.w ?? blankText.w;
     const h = action.payload.h ?? blankText.h;
     const rect = { x: x, y: y, w: w, h: h };
     if (action.payload.src) {
-      state[slideIDinArray].slideObjects.push({ ...blankImage, ...rect, src: action.payload.src, id: uu4v() });
+      state.slides[slideIDinArray].slideObjects.push({ ...blankImage, ...rect, src: action.payload.src, id: uu4v() });
     } else if (action.payload.text) {
-      state[slideIDinArray].slideObjects.push({ ...blankText, ...rect, text: action.payload.text, id: uu4v() });
+      state.slides[slideIDinArray].slideObjects.push({ ...blankText, ...rect, text: action.payload.text, id: uu4v() });
     }
   },
-  removeSlideObjects: (state: SlidesState, action: PayloadAction<RemoveSlideObjectProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
-    state[slideIDinArray].slideObjects = state[slideIDinArray].slideObjects.filter((slideObj) => !action.payload.slideObjArrayID.includes(slideObj.id));
+  removeSlideObjects: (state: Presentation, action: PayloadAction<RemoveSlideObjectProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
+    state.slides[slideIDinArray].slideObjects = state.slides[slideIDinArray].slideObjects.filter((slideObj) => !action.payload.slideObjArrayID.includes(slideObj.id));
   },
-  putText: (state: SlidesState, action: PayloadAction<PutTextProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
-    const slideObjIDinArray = state[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
-    if (state[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
-      state[slideIDinArray].slideObjects[slideObjIDinArray].text = action.payload.text;
+  putText: (state: Presentation, action: PayloadAction<PutTextProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
+    const slideObjIDinArray = state.slides[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
+    if (state.slides[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
+      state.slides[slideIDinArray].slideObjects[slideObjIDinArray].text = action.payload.text;
     }
   },
-  setFontFamily: (state: SlidesState, action: PayloadAction<SetFontFamilyProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
-    const slideObjIDinArray = state[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
-    if (state[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
-      state[slideIDinArray].slideObjects[slideObjIDinArray].font_family = action.payload.font_family;
+  setFontFamily: (state: Presentation, action: PayloadAction<SetFontFamilyProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
+    const slideObjIDinArray = state.slides[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
+    if (state.slides[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
+      state.slides[slideIDinArray].slideObjects[slideObjIDinArray].font_family = action.payload.font_family;
     }
   },
-  setFontSize: (state: SlidesState, action: PayloadAction<SetFontSizeProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
-    const slideObjIDinArray = state[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
-    if (state[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
-      state[slideIDinArray].slideObjects[slideObjIDinArray].font_size = action.payload.size;
+  setFontSize: (state: Presentation, action: PayloadAction<SetFontSizeProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
+    const slideObjIDinArray = state.slides[slideIDinArray].slideObjects.findIndex((slideObj) => slideObj.id === action.payload.slideObjID);
+    if (state.slides[slideIDinArray].slideObjects[slideObjIDinArray].type === "text") {
+      state.slides[slideIDinArray].slideObjects[slideObjIDinArray].font_size = action.payload.size;
     }
   },
-  displaceSlideObj: (state: SlidesState, action: PayloadAction<DisplaceSlideObjProps>) => {
-    const slideIDinArray = state.findIndex((slide) => slide.id === action.payload.slideID);
-    state[slideIDinArray].slideObjects.forEach((slideObj) => {
+  displaceSlideObj: (state: Presentation, action: PayloadAction<DisplaceSlideObjProps>) => {
+    const slideIDinArray = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
+    state.slides[slideIDinArray].slideObjects.forEach((slideObj) => {
       if (action.payload.slideObjectsID.includes(slideObj.id)) {
         slideObj.x += action.payload.shift.x;
         slideObj.y += action.payload.shift.y;
       }
     });
   },
-  setSizeAndPositionArray: (state: SlidesState, action: PayloadAction<SetSizeAndPositionArrayProps>) => {
-    const slideArrayID = state.findIndex((slide) => slide.id === action.payload.slideID);
+  setSizeAndPositionArray: (state: Presentation, action: PayloadAction<SetSizeAndPositionArrayProps>) => {
+    const slideArrayID = state.slides.findIndex((slide) => slide.id === action.payload.slideID);
     for (const payload of action.payload.payloads) {
-      const slideObjArrayID = state[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === payload.slideObjID);
-      state[slideArrayID].slideObjects[slideObjArrayID] = {
-        ...state[slideArrayID].slideObjects[slideObjArrayID],
+      const slideObjArrayID = state.slides[slideArrayID].slideObjects.findIndex((slideObj) => slideObj.id === payload.slideObjID);
+      state.slides[slideArrayID].slideObjects[slideObjArrayID] = {
+        ...state.slides[slideArrayID].slideObjects[slideObjArrayID],
         x: payload.x,
         y: payload.y,
         w: payload.w,

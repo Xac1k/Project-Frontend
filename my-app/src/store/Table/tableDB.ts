@@ -1,16 +1,15 @@
 import { Client, TablesDB } from "appwrite";
 import { DataBaseID, Endpoint, ProjectID, TabelID } from "../constant";
-import { uu4v } from "../functions";
 import type { Presentation } from "../types";
 
 const client = new Client().setEndpoint(`${Endpoint}`).setProject(`${ProjectID}`);
 const tablesDB = new TablesDB(client);
 
-async function saveToDB(data: Presentation) {
+async function saveToDB(data: Presentation, presentationID: string) {
   const result = await tablesDB.upsertRow({
     databaseId: `${DataBaseID}`,
     tableId: `${TabelID}`,
-    rowId: `${uu4v()}`,
+    rowId: `${presentationID}`,
     data: {
       title: data.title,
       JSON: `${JSON.stringify(data)}`,
@@ -29,4 +28,13 @@ async function getRows() {
   return result;
 }
 
-export { saveToDB, getRows };
+async function getPresentationDB(rowId: string) {
+  const result = await tablesDB.getRow({
+    databaseId: `${DataBaseID}`,
+    tableId: `${TabelID}`,
+    rowId: rowId,
+  });
+  return result;
+}
+
+export { saveToDB, getRows, getPresentationDB };
