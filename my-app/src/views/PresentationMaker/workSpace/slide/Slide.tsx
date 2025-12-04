@@ -129,9 +129,9 @@ type SlidePreviewProps = {
   externalStyle?: React.CSSProperties;
   externalClassName?: string;
 };
-function SlidePreview({ slide, scale, onClick, externalClassName }: SlidePreviewProps) {
+function SlidePreview({ slide, scale, onClick }: SlidePreviewProps) {
   return (
-    <div onMouseDown={onClick} className={styles.ThumblnailSlide + " " + externalClassName} id={`slidePreview-${slide.id}`}>
+    <div onMouseDown={onClick} id={`slidePreview-${slide.id}`}>
       {slide.slideObjects.map((slideObj) => {
         return <SlideObject key={slideObj.id} slideObj={slideObj} scale={scale} />;
       })}

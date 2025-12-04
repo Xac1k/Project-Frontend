@@ -1,12 +1,11 @@
 // components/Gallary.tsx
 import { useEffect, useState } from "react";
-import { getRowsByEmail, saveToDB } from "../../store/Table/tableDB";
+import { getRowsByEmail, saveToDB } from "../../store/Table/tableDB.ts";
 import styles from "./Gallary.module.css";
-import { PreviewBox } from "./PriviewBox";
-import { AddPresetation } from "./IconAddPresentatio";
+import { PreviewBox } from "./PriviewBox.tsx";
 import type { Models } from "appwrite";
-import { uu4v } from "../../store/functions";
-import { useAppActions, useAppSelector } from "../../store/store";
+import { uu4v } from "../../store/functions.ts";
+import { useAppActions, useAppSelector } from "../../store/store.ts";
 import { useDispatch } from "react-redux";
 import { downloadPresentationDB } from "../../store/Middleware/dataLoaderDB.ts";
 import { blankPresentation } from "../../store/PresentationMax.ts";
@@ -29,21 +28,6 @@ function Gallary() {
     dispatch(downloadPresentationDB(rowId));
   };
 
-  const renderRows = () => {
-    const lines = [];
-    for (let i = 0; i < rows.length; i += 4) {
-      const sliceRows = rows.slice(i, i + 4);
-      lines.push(
-        <div key={i} className={styles.Line}>
-          {sliceRows.map((row) => (
-            <PreviewBox key={row.$id} title={row.title} rowData={row.JSON} onClick={() => handlePresentationClick(row.$id)} />
-          ))}
-        </div>,
-      );
-    }
-    return lines;
-  };
-
   const generateNewPres = () => {
     const newPresentationID = uu4v();
     saveToDB({ ...blankPresentation, presentationID: newPresentationID }, newPresentationID);
@@ -52,14 +36,18 @@ function Gallary() {
   };
 
   return (
-    <div className={styles.Background}>
-      {renderRows()}
-      <div className={styles.Line}>
-        <AddPresetation
-          onClick={() => {
-            generateNewPres();
-          }}
-        />
+    <div className={styles.GallaryGrid}>
+      {rows.map((row) => (
+        <PreviewBox key={row.$id} title={row.title} data={row} onClick={() => handlePresentationClick(row.$id)} />
+      ))}
+      <div
+        className={styles.AddPresentationCard}
+        onClick={() => {
+          generateNewPres();
+        }}
+      >
+        <div className={styles.addIcon} />
+        <p className={styles.AddTitle}>Создать новую презентацию</p>
       </div>
     </div>
   );

@@ -1,34 +1,198 @@
-.Background {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.PresentationCard {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  height: 280px;
+  transition: all 1s;
+}
+
+.PresentationCard:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.15),
+    0 10px 10px -6px rgba(0, 0, 0, 0.15);
+}
+
+.PresentationCard:hover .TitleCard {
+  color: #4f46e5;
+}
+
+.ThumblnailCard {
+  height: 192px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ThumblnailCardEmpty {
+  height: 192px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ThumblnailCardEmpty::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #f59e0b, #ef4444);
+  background-size: 400% 400%;
+  opacity: 0.8;
+}
+
+.ContentCard {
+  padding: 1.25rem; /*TODO: заменить на понятные единицы*/
+  height: 88px;
+  position: relative;
+  background-color: white;
+}
+
+.TitleCard {
+  font-size: 1.125rem; /*TODO: заменить на понятные единицы*/
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem; /*TODO: заменить на понятные единицы*/
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.TitleCard:hover {
+  color: #4f46e5;
+}
+
+.InfoCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.SlidesCount {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.AddPresentationCard {
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 280px;
+  box-shadow:
+    0 10px 25px -5px rgba(16, 185, 129, 0.3),
+    0 8px 10px -6px rgba(16, 185, 129, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 1s;
+}
+
+.AddPresentationCard:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 20px 25px -5px rgba(16, 185, 129, 0.4),
+    0 10px 10px -6px rgba(16, 185, 129, 0.3);
+}
+
+.AddTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.GallaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 32px;
+
   height: 100vh;
   width: 100vw;
-  display: flex;
 
-  justify-content: center;
-  flex-direction: column;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Roboto",
+    sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
 
   overflow-y: scroll;
 }
 
-.Line {
+.addIcon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
   display: flex;
-  justify-content: space-around;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.PreviewBox {
-  width: 355.94px;
-  height: 251px;
+.addIcon::after {
+  content: "";
+  position: absolute;
+  background: white;
+  border-radius: 2px;
+  width: 24px;
+  height: 4px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s;
 }
 
-.Preview {
-  width: 355.94px;
-  height: 212px;
-  border-radius: 25px;
+.addIcon::before {
+  content: "";
+  position: absolute;
+  background: white;
+  border-radius: 2px;
+  width: 4px;
+  height: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s;
 }
 
-.Title {
-  font-family: "Segoe UI", system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
+.AddPresentationCard:hover .addIcon {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.SlideIcon {
+  width: 15px;
+  height: 15px;
 }
