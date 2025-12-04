@@ -43,6 +43,7 @@ type Presentation = {
   title: string;
   selection: Selection;
   presentationID: string;
+  email: string;
 };
 
 export type { Presentation, Selection, Slide, SlideObj, Picture, TextPlain };
@@ -156,7 +157,12 @@ type setPresentationID = {
   presentationID: string;
 };
 
+type SetEmail = {
+  email: string;
+};
+
 export type {
+  SetEmail,
   SetSizeAndPositionProps,
   SetTitleProps,
   RemoveSlideProps,

@@ -2,6 +2,7 @@ import { useAppActions } from "../../../../store/store";
 import styles from "./Toolbarnputs.module.css";
 
 export default function ToolbarInput() {
+  const { setTitle } = useAppActions();
   return (
     <input
       className={styles.presentationName}
@@ -9,7 +10,6 @@ export default function ToolbarInput() {
       onInput={(event) => {
         const target = event.target as HTMLInputElement;
         console.log(target.value);
-        const { setTitle } = useAppActions();
         setTitle({ name: target.value });
       }}
       defaultValue="Новая презентация"

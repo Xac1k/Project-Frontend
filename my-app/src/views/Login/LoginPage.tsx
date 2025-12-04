@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { loginAccount } from "../../signUp";
 import styles from "./Login.module.css";
+import { useAppActions } from "../../store/store";
 
 export type propsLoginPage = {
   setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>;
@@ -11,6 +12,7 @@ export type propsLoginPage = {
 function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+  const { setEmailName } = useAppActions();
 
   return (
     <div className={styles.Background}>
@@ -21,7 +23,11 @@ function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
         <button
           className={styles.Button}
           onClick={() => {
-            if (email && password) loginAccount(email, password, setIsLoged);
+            if (email && password) {
+              loginAccount(email, password, setIsLoged).then(() => {
+                setEmailName({ email: email });
+              });
+            }
           }}
         >
           signIn

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { checkAuthStatus } from "../../signUp.ts";
 import { LoginPage } from "./LoginPage.tsx";
 import { LogupPage } from "./LogupPage.tsx";
+import { useAppActions } from "../../store/store.ts";
 
 export type propsLogin = {
   setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>;
@@ -9,14 +10,17 @@ export type propsLogin = {
 
 function Login({ setIsLoged }: propsLogin) {
   const [isCreatingAccount, setIsCreatingAccount] = useState<boolean>();
-  const sessionID = useRef<string>(null);
+  const { setEmailName } = useAppActions();
 
   useEffect(() => {
     setTimeout(() => {
       const checkAuth = async () => {
         try {
-          const authStatus = await checkAuthStatus(sessionID);
-          setIsLoged(authStatus);
+          await checkAuthStatus().then((res) => {
+            console.log("Аутентификация прошла", res);
+            setEmailName({ email: res });
+            setIsLoged(res != undefined);
+          });
         } catch (error) {
           console.error("Error checking auth status:", error);
           setIsLoged(false);
@@ -24,7 +28,7 @@ function Login({ setIsLoged }: propsLogin) {
       };
       checkAuth();
     }, 300);
-  }, []);
+  }, [setEmailName, setIsLoged]);
 
   return (
     <>

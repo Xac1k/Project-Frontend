@@ -1,18 +1,12 @@
 import { Client, Account, ID } from "appwrite";
 import { Endpoint, ProjectID } from "./store/constant";
 
-const client = new Client().setProject(ProjectID).setEndpoint(Endpoint);
+export const client = new Client().setProject(ProjectID).setEndpoint(Endpoint);
 const account = new Account(client);
 
-async function checkAuthStatus(SessionID: React.RefObject<string | null>) {
-  try {
-    const user = await account.get();
-    SessionID.current = user.$id;
-    console.log(user);
-    return true;
-  } catch (error) {
-    return false;
-  }
+async function checkAuthStatus() {
+  const user = await account.get();
+  return user.email;
 }
 
 async function createAccount(email: string, password: string, name: string) {
@@ -28,8 +22,7 @@ async function createAccount(email: string, password: string, name: string) {
 }
 
 async function loginAccount(email: string, password: string, setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>) {
-  console.log("password", password);
-  const result = await account
+  await account
     .createEmailPasswordSession({
       email: `${email}`,
       password: `${password}`,
@@ -40,7 +33,6 @@ async function loginAccount(email: string, password: string, setIsLoged: React.D
     .catch((res) => {
       console.log(res);
     });
-  console.log(result);
 }
 
 async function loginOut(setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>) {

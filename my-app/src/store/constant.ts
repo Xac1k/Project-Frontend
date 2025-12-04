@@ -6,5 +6,6 @@ const DataBaseID = "692755c1002f52881c2a";
 const TabelID = "presentations";
 const ProjectID = "691e06b2002471259e0b";
 const Endpoint = "https://nyc.cloud.appwrite.io/v1";
+const brucketID = "692e8a8b002414254fca";
 
-export { standartSlideSize, minSizeSlideObjOrGroupSlideObj, emptyRect, DataBaseID, TabelID, ProjectID, Endpoint };
+export { standartSlideSize, minSizeSlideObjOrGroupSlideObj, emptyRect, DataBaseID, TabelID, ProjectID, Endpoint, brucketID };

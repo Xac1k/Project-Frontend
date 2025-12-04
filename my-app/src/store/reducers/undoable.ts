@@ -66,7 +66,7 @@ export function undoable(
         if (newPresent.slides === state.present.slides && newPresent.title === state.present.title)
           return {
             ...state,
-            present: { ...state.present, selection: newPresent.selection, presentationID: newPresent.presentationID },
+            present: { ...state.present, selection: newPresent.selection, presentationID: newPresent.presentationID, email: newPresent.email },
           };
 
         return {

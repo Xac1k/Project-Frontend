@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import styles from "./PopOver.module.css";
 import { isURL } from "../../../store/Validation";
 import { useAppActions, useAppSelector } from "../../../store/store";
+import { saveToStorageFromUrl } from "../../../store/Table/tableDB";
 
 type PopOverProps = {
   isHidden: boolean;
@@ -20,8 +21,8 @@ function PopOverCreatingImage(props: PopOverProps) {
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key == "Enter") {
         const srcImage = src.current?.value;
-        if (isURL(srcImage)) {
-          addSlideObject({ slideID: selectedSlideIDs.at(-1) ?? "", src: srcImage });
+        if (isURL(srcImage) && srcImage) {
+          saveToStorageFromUrl(srcImage).then((res) => addSlideObject({ slideID: selectedSlideIDs.at(-1) ?? "", src: res }));
         }
       }
     };

@@ -1,9 +1,11 @@
-import { Client, TablesDB } from "appwrite";
-import { DataBaseID, Endpoint, ProjectID, TabelID } from "../constant";
+import { TablesDB, Storage, Query } from "appwrite";
+import { DataBaseID, ProjectID, TabelID, brucketID } from "../constant";
 import type { Presentation } from "../types";
+import { uu4v } from "../functions";
+import { client } from "../../signUp";
 
-const client = new Client().setEndpoint(`${Endpoint}`).setProject(`${ProjectID}`);
 const tablesDB = new TablesDB(client);
+const storage = new Storage(client);
 
 async function saveToDB(data: Presentation, presentationID: string) {
   const result = await tablesDB.upsertRow({
@@ -13,17 +15,20 @@ async function saveToDB(data: Presentation, presentationID: string) {
     data: {
       title: data.title,
       JSON: `${JSON.stringify(data)}`,
+      email: `${data.email}`,
     },
   });
-
-  console.log(result);
+  console.log("Сохранено", result);
 }
 
-async function getRows() {
+async function getRowsByEmail(email: string) {
   const result = await tablesDB.listRows({
     databaseId: `${DataBaseID}`,
     tableId: `${TabelID}`,
+    queries: [Query.equal("email", email)],
   });
+
+  console.log(result);
 
   return result;
 }
@@ -37,4 +42,27 @@ async function getPresentationDB(rowId: string) {
   return result;
 }
 
-export { saveToDB, getRows, getPresentationDB };
+async function saveToStorageFile(file: File, name: string) {
+  await storage.createFile({
+    bucketId: `${brucketID}`,
+    fileId: `${name}`,
+    file,
+  });
+
+  return `https://nyc.cloud.appwrite.io/v1/storage/buckets/${brucketID}/files/${name}/view?project=${ProjectID}&mode=admin`;
+}
+
+async function saveToStorageFromUrl(url: string) {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const name = uu4v();
+
+  const file = new File([blob], name, {
+    type: blob.type,
+    lastModified: Date.now(),
+  });
+
+  return saveToStorageFile(file, name);
+}
+
+export { saveToDB, getRowsByEmail, getPresentationDB, saveToStorageFromUrl };

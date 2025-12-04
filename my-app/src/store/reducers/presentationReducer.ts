@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Presentation, setPresentationID } from "../types";
+import type { Presentation, SetEmail, setPresentationID } from "../types";
 import slideObjectsReducer from "./slideObjectsReducer";
 import selectionReducer from "./selectionReducer";
 import titleReducer from "./titleReducer";
@@ -15,6 +15,7 @@ const initialState: Presentation = {
     selectedObjectID: [],
   },
   presentationID: "",
+  email: "",
 };
 
 export const presentationSlice = createSlice({
@@ -35,7 +36,10 @@ export const presentationSlice = createSlice({
     },
     clearPresID: (state) => {
       state.presentationID = "";
-      console.log("Очищение");
+    },
+    setEmailName: (state, action: PayloadAction<SetEmail>) => {
+      state.email = action.payload.email;
+      console.log("Установили email", state.email);
     },
   },
   extraReducers: (builder) => {

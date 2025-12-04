@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createAccount } from "../../signUp.ts";
 import styles from "./Login.module.css";
+import { useAppActions } from "../../store/store.ts";
 
 export type propsLogin = {
   setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>;
@@ -8,6 +9,7 @@ export type propsLogin = {
 };
 
 function LogupPage({ setIsCreatingAccount, setIsLoged }: propsLogin) {
+  const { setEmailName } = useAppActions();
   const [email, setEmail] = useState<string>();
   const [name, setName] = useState<string>();
   const [password, setPassword] = useState<string>();
@@ -25,6 +27,7 @@ function LogupPage({ setIsCreatingAccount, setIsLoged }: propsLogin) {
               createAccount(email, password, name)
                 .then(() => {
                   setIsLoged(true);
+                  setEmailName({ email });
                 })
                 .catch(() => {
                   console.log("Не удалось зарегистрировать пользователя");

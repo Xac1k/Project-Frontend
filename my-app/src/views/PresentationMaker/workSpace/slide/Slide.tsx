@@ -122,4 +122,21 @@ function SlideThumblnail({ slide, scale, initUseMoveSlideHandler, externalStyle,
   );
 }
 
-export { SlideThumblnail, SlideWorkSpace };
+type SlidePreviewProps = {
+  slide: Slide;
+  onClick?: () => void;
+  scale?: number;
+  externalStyle?: React.CSSProperties;
+  externalClassName?: string;
+};
+function SlidePreview({ slide, scale, onClick, externalClassName }: SlidePreviewProps) {
+  return (
+    <div onMouseDown={onClick} className={styles.ThumblnailSlide + " " + externalClassName} id={`slidePreview-${slide.id}`}>
+      {slide.slideObjects.map((slideObj) => {
+        return <SlideObject key={slideObj.id} slideObj={slideObj} scale={scale} />;
+      })}
+    </div>
+  );
+}
+
+export { SlideThumblnail, SlideWorkSpace, SlidePreview };

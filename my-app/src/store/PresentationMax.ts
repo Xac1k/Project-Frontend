@@ -1,4 +1,4 @@
-import type { Presentation } from "./types";
+import type { Presentation, Slide } from "./types";
 export const dataJSON: Presentation = {
   title: "TestMaximalDataSet",
   slides: [
@@ -247,4 +247,23 @@ export const dataJSON: Presentation = {
   ],
   selection: { selectedObjectID: [], selectedSlideID: ["0"] },
   presentationID: "",
+};
+
+export const blankPresentation: Presentation = {
+  title: "Новая перезнтация",
+  slides: [],
+  selection: {
+    selectedObjectID: [],
+    selectedSlideID: [],
+  },
+  presentationID: "",
+};
+
+export const blankSlide: Slide = {
+  slideObjects: [],
+  background: {
+    color: "white",
+    type: "color",
+  },
+  id: "новый слайд",
 };
