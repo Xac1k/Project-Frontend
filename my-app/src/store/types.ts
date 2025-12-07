@@ -46,7 +46,7 @@ type Presentation = {
   email: string;
 };
 
-export type { Presentation, Selection, Slide, SlideObj, Picture, TextPlain };
+export type { Background, Presentation, Selection, Slide, SlideObj, Picture, TextPlain };
 
 type SetTitleProps = {
   name: string;

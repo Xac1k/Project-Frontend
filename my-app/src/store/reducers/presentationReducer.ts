@@ -6,6 +6,7 @@ import selectionReducer from "./selectionReducer";
 import titleReducer from "./titleReducer";
 import slidesReducer from "./slidesReducer";
 import { downloadPresentationDB } from "../Middleware/dataLoaderDB";
+import { isPresentation } from "../Validation";
 
 const initialState: Presentation = {
   slides: [],
@@ -44,10 +45,15 @@ export const presentationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(downloadPresentationDB.fulfilled, (state, action) => {
-      state.selection = action.payload.selection;
-      state.slides = action.payload.slides;
-      state.title = action.payload.title;
-      state.presentationID = action.meta.arg;
+      if (isPresentation(action.payload)) {
+        state.selection = action.payload.selection;
+        state.slides = action.payload.slides;
+        state.title = action.payload.title;
+        state.presentationID = action.meta.arg;
+        console.log("Данные установленны");
+      } else {
+        console.log("Неправильный формат данных");
+      }
     });
   },
 });
