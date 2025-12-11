@@ -77,7 +77,7 @@ type RemoveSlideObjectProps = {
 };
 
 type AddSlideObjectProps = {
-  slideID: string;
+  slideID: string | undefined;
   src?: string;
   x?: number;
   y?: number;
@@ -148,9 +148,8 @@ type setSlideObjAs = {
 };
 
 type SelectFromToProps = {
-  startSlideID: string;
-  endSlideID: string;
-  slides: Slide[];
+  startSlideID: string | undefined;
+  endSlideID: string | undefined;
 };
 
 type setPresentationID = {

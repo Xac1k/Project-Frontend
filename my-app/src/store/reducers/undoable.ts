@@ -35,7 +35,8 @@ export function undoable(
 
   return function (state = initialUndoState, action: UnknownAction | UndoActionType | RedoActionType) {
     switch (action.type) {
-      case "undo": //отменить
+      case "undo": {
+        //отменить
         if (state.past.length === 0 || state.past.at(-1)?.presentationID.length == 0) return state;
         const prev = state.past[state.past.length - 1];
         const newPrev = state.past.slice(0, state.past.length - 1);
@@ -45,9 +46,9 @@ export function undoable(
           present: prev,
           future: [state.present, ...state.future],
         };
-
-        break;
-      case "redo": //востановить
+      }
+      case "redo": {
+        //востановить
         if (state.future.length === 0) return state;
         const next = state.future[0];
         const newFuture = state.future.slice(1);
@@ -57,9 +58,8 @@ export function undoable(
           present: next,
           future: newFuture,
         };
-
-        break;
-      default:
+      }
+      default: {
         if (isUndoAction(action)) return state;
         const newPresent = reducer(state.present, action);
 
@@ -74,6 +74,7 @@ export function undoable(
           present: newPresent,
           future: [],
         };
+      }
     }
   };
 }

@@ -1,19 +1,10 @@
 import { useEffect, useRef } from "react";
 import styles from "./SlideCollection.module.css";
 import ToolbarCollection from "./toolbar/toolBar";
-import { standartSlideSize } from "../../../../store/constant";
+import { scaleThumblnail, standartSlideSize } from "../../../../store/constant";
 import { useMoveSlide } from "../../../hooks/DragAndDropSlide";
 import { DragableSlideThumblnail } from "./dragableSlideThumbnail/DragableSlideThumbnail";
 import { useAppSelector } from "../../../../store/store";
-
-const widthSlideCollection = 400;
-const marginsSlideCollection = 17;
-const scaleThumblnail = (widthSlideCollection - marginsSlideCollection * 2) / standartSlideSize.w;
-const heightToolbar = 100;
-const heightToolbarCollection = 75;
-const offsetBetweenBundle = 15;
-
-export { scaleThumblnail, heightToolbar, heightToolbarCollection, offsetBetweenBundle };
 
 export function SlideCollection() {
   const slides = useAppSelector((state) => state.present.slides);

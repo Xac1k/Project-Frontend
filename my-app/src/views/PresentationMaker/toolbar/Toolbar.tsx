@@ -23,8 +23,10 @@ const onClickHandleExport = () => {
 const onClickHandleDemo = () => {
   console.log("Демострировать презентацию");
 };
-
-export default function Toolbar(props: propsLogin) {
+type ModalProps = {
+  setModalActive: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export default function Toolbar(props: propsLogin & ModalProps) {
   const [isHiddenImage, setIsHiddenImage] = useState<boolean>(true);
   const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
   const [isHiddenText, setIsHiddenText] = useState<boolean>(true);
@@ -39,8 +41,7 @@ export default function Toolbar(props: propsLogin) {
   };
 
   const onClickHandleIMG = () => {
-    console.log("Создать элемент картинки");
-    setIsHiddenImage(!isHiddenImage);
+    props.setModalActive(true);
     setIsHiddenBackground(true);
     setIsHiddenText(true);
   };

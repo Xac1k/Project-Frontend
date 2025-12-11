@@ -16,7 +16,7 @@ type CreateStyles = {
 };
 function createStyles(sizeElt: Rect): CreateStyles {
   const pointForSize = { y: 10, x: 10, radius: 5 };
-  let lineForSize = {
+  const lineForSize = {
     vert: { long: Math.max(sizeElt.h * 0.1, 20), short: 10 },
     horiz: { long: Math.max(sizeElt.w * 0.1, 20), short: 10 },
     radius: 5,

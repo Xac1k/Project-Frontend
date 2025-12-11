@@ -9,3 +9,12 @@ const Endpoint = "https://nyc.cloud.appwrite.io/v1";
 const brucketID = "692e8a8b002414254fca";
 
 export { standartSlideSize, minSizeSlideObjOrGroupSlideObj, emptyRect, DataBaseID, TabelID, ProjectID, Endpoint, brucketID };
+
+const widthSlideCollection = 400;
+const marginsSlideCollection = 17;
+const scaleThumblnail = (widthSlideCollection - marginsSlideCollection * 2) / standartSlideSize.w;
+const heightToolbar = 100;
+const heightToolbarCollection = 75;
+const offsetBetweenBundle = 15;
+
+export { scaleThumblnail, heightToolbar, heightToolbarCollection, offsetBetweenBundle };

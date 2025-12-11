@@ -1,5 +1,5 @@
 import { TablesDB, Storage, Query } from "appwrite";
-import { DataBaseID, ProjectID, TabelID, brucketID } from "../constant";
+import { DataBaseID, TabelID, brucketID } from "../constant";
 import type { Presentation } from "../types";
 import { uu4v } from "../functions";
 import { client } from "../../signUp";
@@ -43,13 +43,16 @@ async function getPresentationDB(rowId: string) {
 }
 
 async function saveToStorageFile(file: File, name: string) {
-  await storage.createFile({
+  const result = await storage.createFile({
     bucketId: `${brucketID}`,
     fileId: `${name}`,
     file,
   });
 
-  return `https://nyc.cloud.appwrite.io/v1/storage/buckets/${brucketID}/files/${name}/view?project=${ProjectID}&mode=admin`;
+  return storage.getFileView({
+    bucketId: `${brucketID}`,
+    fileId: result.$id,
+  });
 }
 
 async function saveToStorageFromUrl(url: string) {
@@ -65,4 +68,4 @@ async function saveToStorageFromUrl(url: string) {
   return saveToStorageFile(file, name);
 }
 
-export { saveToDB, getRowsByEmail, getPresentationDB, saveToStorageFromUrl };
+export { saveToDB, getRowsByEmail, getPresentationDB, saveToStorageFromUrl, saveToStorageFile };

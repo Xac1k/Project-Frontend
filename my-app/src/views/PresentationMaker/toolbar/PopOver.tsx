@@ -85,7 +85,6 @@ function PopOverColor(props: PopOverBackgroundProps) {
 }
 
 function PopOverImg(props: PopOverBackgroundProps) {
-  const SRC = /http[\n\w\\\/\:.?=\-&]*/g;
   const { setBackground } = useAppActions();
   const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
   if (!props.isHidden) {
@@ -99,7 +98,7 @@ function PopOverImg(props: PopOverBackgroundProps) {
             if (event.key == "Enter") {
               const target = event.target as HTMLInputElement;
               console.log(target.value);
-              if (SRC.test(target.value)) {
+              if (isURL(target.value)) {
                 setBackground({ slideID: selectedSlideIDs.at(-1) ?? "", src: target.value });
               }
             }

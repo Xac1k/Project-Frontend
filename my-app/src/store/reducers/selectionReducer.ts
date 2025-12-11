@@ -11,14 +11,14 @@ export default {
   },
   selectSlideFromTo: (state: Presentation, action: PayloadAction<SelectFromToProps>) => {
     state.selection.selectedObjectID = [];
-    const startSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.startSlideID);
-    const endSlideArrayID = action.payload.slides.findIndex((slide) => slide.id == action.payload.endSlideID);
+    const startSlideArrayID = state.slides.findIndex((slide) => slide.id == action.payload.startSlideID);
+    const endSlideArrayID = state.slides.findIndex((slide) => slide.id == action.payload.endSlideID);
 
     for (let id = startSlideArrayID; id <= endSlideArrayID; ++id) {
-      state.selection.selectedSlideID.push(action.payload.slides[id].id);
+      state.selection.selectedSlideID.push(state.slides[id].id);
     }
     for (let id = startSlideArrayID; id >= endSlideArrayID; --id) {
-      state.selection.selectedSlideID.push(action.payload.slides[id].id);
+      state.selection.selectedSlideID.push(state.slides[id].id);
     }
   },
   setSlideAsSelected: (state: Presentation, action: PayloadAction<setSlideAs>) => {

@@ -52,6 +52,7 @@ async function getCurrentSession() {
     const sessions = await account.listSessions();
     return sessions.sessions;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }

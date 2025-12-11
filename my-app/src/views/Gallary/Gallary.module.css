@@ -53,7 +53,7 @@
 }
 
 .ContentCard {
-  padding: 1.25rem; /*TODO: заменить на понятные единицы*/
+  padding: 20px;
   height: 88px;
   position: relative;
   background-color: white;

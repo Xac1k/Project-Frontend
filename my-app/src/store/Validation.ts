@@ -2,11 +2,11 @@ import type { Background, Presentation, Slide, SlideObj, Selection } from "./typ
 
 function isURL(text: string | undefined): boolean {
   if (!text) return false;
-  const SRC = /http[\n\w\\\/\:.?=\-&]*/g;
+  const SRC = /http[\n\w\\/:.?=\-&]*/g;
   return SRC.test(text);
 }
 
-function isBackground(arg: any): arg is Background {
+function isBackground(arg: unknown): arg is Background {
   if (!arg || typeof arg !== "object") return false;
 
   const hasType = "type" in arg && typeof arg.type === "string";
@@ -25,7 +25,7 @@ function isBackground(arg: any): arg is Background {
   return false;
 }
 
-function isSLideObjects(arg: any): arg is SlideObj {
+function isSLideObjects(arg: unknown): arg is SlideObj {
   if (!arg || typeof arg !== "object") return false;
 
   const hasType = "type" in arg && typeof arg.type === "string";
@@ -53,10 +53,10 @@ function isSLideObjects(arg: any): arg is SlideObj {
   return false;
 }
 
-function isSlide(arg: any): arg is Slide {
+function isSlide(arg: unknown): arg is Slide {
   if (!arg || typeof arg !== "object") return false;
 
-  const hasSlideObjects = Array.isArray(arg.slideObjects);
+  const hasSlideObjects = "slideObjects" in arg && Array.isArray(arg.slideObjects);
   const hasBackground = "background" in arg && typeof arg.background === "object";
   const hasID = "id" in arg && typeof arg.id === "string";
 
@@ -71,9 +71,11 @@ function isSlide(arg: any): arg is Slide {
   return false;
 }
 
-function isSelection(arg: any): arg is Selection {
-  const hasSelectedSlideID = Array.isArray(arg.selectedSlideID);
-  const hasSelectedObjectID = Array.isArray(arg.selectedObjectID);
+function isSelection(arg: unknown): arg is Selection {
+  if (!arg || typeof arg !== "object") return false;
+
+  const hasSelectedSlideID = "selectedSlideID" in arg && Array.isArray(arg.selectedSlideID);
+  const hasSelectedObjectID = "selectedObjectID" in arg && Array.isArray(arg.selectedObjectID);
 
   if (hasSelectedSlideID && hasSelectedObjectID) {
     const candidate = arg as Selection;
@@ -86,11 +88,11 @@ function isSelection(arg: any): arg is Selection {
   return false;
 }
 
-function isPresentation(arg: any): arg is Presentation {
+function isPresentation(arg: unknown): arg is Presentation {
   if (!arg || typeof arg !== "object") return false;
 
   const hasSelection = "selection" in arg && typeof arg.selection === "object";
-  const hasSlides = Array.isArray(arg.slides);
+  const hasSlides = "slides" in arg && Array.isArray(arg.slides);
   const hasTitle = "title" in arg && typeof arg.title === "string";
   const hasPresentationID = "presentationID" in arg && typeof arg.presentationID === "string";
   const hasEmail = "email" in arg && typeof arg.email === "string";

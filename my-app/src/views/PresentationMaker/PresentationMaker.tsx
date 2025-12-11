@@ -2,8 +2,9 @@ import Toolbar from "./toolbar/Toolbar";
 import { WorkSpace } from "./workSpace/WorkSpace";
 import { useUndoRedo } from "../hooks/UndoRedo";
 import { useAppSelector } from "../../store/store";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { getPresentationDB } from "../../store/Table/tableDB";
+import { LoadingPictureModal } from "./modal/Modal";
 
 type PresentationMakerProps = {
   setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>;
@@ -11,6 +12,7 @@ type PresentationMakerProps = {
 function PresentationMaker({ setIsLoged }: PresentationMakerProps) {
   useUndoRedo();
   const presentationID = useAppSelector((state) => state.present.presentationID);
+  const [isModalActive, setModalActive] = useState<boolean>(false);
 
   useLayoutEffect(() => {
     getPresentationDB(presentationID).then((res) => {
@@ -22,8 +24,9 @@ function PresentationMaker({ setIsLoged }: PresentationMakerProps) {
 
   return (
     <>
-      <Toolbar setIsLoged={setIsLoged} />
+      <Toolbar setIsLoged={setIsLoged} setModalActive={setModalActive} />
       <WorkSpace />
+      {isModalActive ? <LoadingPictureModal setModalActive={setModalActive} /> : <></>}
     </>
   );
 }

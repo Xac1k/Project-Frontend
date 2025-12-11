@@ -53,13 +53,11 @@ function SlideThumblnail({ slide, scale, initUseMoveSlideHandler, externalStyle,
   externalClassName = " " + externalClassName;
 
   const selectedSlideIDs = useAppSelector((state) => state.present.selection.selectedSlideID);
-  const slides = useAppSelector((state) => state.present.slides);
-
   const { selectSlideFromTo, setSlideAsSelected, setSlideAsSingleSelected, setSlideAsUnselected } = useAppActions();
 
   function selecteSlideHandle(e: React.MouseEvent | KeyboardEvent, id: string, selectedSlideIDs: string[]) {
     if (e.shiftKey) {
-      selectSlideFromTo({ startSlideID: selectedSlideIDs.at(-1) ?? "", endSlideID: id, slides });
+      selectSlideFromTo({ startSlideID: selectedSlideIDs.at(-1) ?? "", endSlideID: id });
     } else if (e.ctrlKey) {
       setSlideAsSelected({ slideID: id });
     } else {

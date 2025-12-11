@@ -178,7 +178,6 @@ function getSideOfChanging(deltaSize: Rect) {
 }
 
 function computeSizeAndPosition(initialBndRect: Rect, deltaSize: Rect | undefined, slideObj: TextPlain | Picture, side: string | undefined = undefined) {
-  let newObjectSize: { x: number; y: number; w: number; h: number };
   deltaSize = deltaSize ?? { x: 0, y: 0, w: 0, h: 0 };
   side = side ?? getSideOfChanging(deltaSize);
   const bounds = initialBndRect;
@@ -186,7 +185,7 @@ function computeSizeAndPosition(initialBndRect: Rect, deltaSize: Rect | undefine
   const { isLeft, isTop } = getCoeficientsForShiftWhenResize(side);
   const { scaleX, scaleY, deltaSizeWithLimit } = getSizeWithLimitation(bounds, deltaSize, side, slideObj);
 
-  newObjectSize = {
+  const newObjectSize = {
     x: bounds.x + (slideObj.x - bounds.x) * scaleX + deltaSizeWithLimit.x * isLeft,
     y: bounds.y + (slideObj.y - bounds.y) * scaleY + deltaSizeWithLimit.y * isTop,
 
