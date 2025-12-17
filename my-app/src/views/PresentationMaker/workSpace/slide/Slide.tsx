@@ -40,6 +40,26 @@ function SlideWorkSpace({ slide, scale, externalStyle }: SlideProps) {
   );
 }
 
+function SlideView({ slide, scale, externalStyle }: SlideProps) {
+  scale = scale ?? 1;
+
+  const style: React.CSSProperties = {
+    ...externalStyle,
+    width: `${1011 * scale}px`,
+    height: `${643 * scale}px`,
+    backgroundColor: slide.background.type == "color" ? slide.background.color : undefined,
+    backgroundImage: slide.background.type == "image" ? `url(${slide.background.src})` : undefined,
+  };
+
+  return (
+    <div style={style} className={styles.Slide}>
+      {slide.slideObjects.map((slideObj) => {
+        return <SlideObject key={slideObj.id} slideObj={{ ...slideObj }} scale={scale} />;
+      })}
+    </div>
+  );
+}
+
 type ThumbnailSlide = {
   slide: Slide;
   initUseMoveSlideHandler: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -137,4 +157,4 @@ function SlidePreview({ slide, scale, onClick }: SlidePreviewProps) {
   );
 }
 
-export { SlideThumblnail, SlideWorkSpace, SlidePreview };
+export { SlideThumblnail, SlideWorkSpace, SlidePreview, SlideView };

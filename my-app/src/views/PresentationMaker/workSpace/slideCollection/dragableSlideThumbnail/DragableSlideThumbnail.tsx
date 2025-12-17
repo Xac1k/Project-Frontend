@@ -3,7 +3,7 @@ import { standartSlideSize } from "../../../../../store/constant";
 import type { Slide } from "../../../../../store/types";
 import type { Line } from "../../../../../store/typesView";
 import { SlideThumblnail } from "../../slide/Slide";
-import { heightToolbar, heightToolbarCollection, offsetBetweenBundle, scaleThumblnail } from "../SlideCollection";
+import { scaleThumblnail, heightToolbar, heightToolbarCollection, offsetBetweenBundle } from "../../../../../store/constant";
 import styles from "../SlideCollection.module.css";
 import { useAppSelector } from "../../../../../store/store";
 

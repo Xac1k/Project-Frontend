@@ -13,25 +13,23 @@ import { IconUndo } from "./toolbarButton/iconUndo";
 import { useState } from "react";
 import { useAppActions } from "../../../store/store";
 import { loginOut } from "../../../signUp";
-import type { propsLogin } from "../../Login/Login";
 import { IconLogOut } from "./toolbarButton/iconLogOut";
+import { useNavigate } from "react-router-dom";
 
 const onClickHandleExport = () => {
   console.log("Экспортировать файл");
 };
 
-const onClickHandleDemo = () => {
-  console.log("Демострировать презентацию");
-};
 type ModalProps = {
   setModalActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export default function Toolbar(props: propsLogin & ModalProps) {
+export default function Toolbar(props: ModalProps) {
   const [isHiddenImage, setIsHiddenImage] = useState<boolean>(true);
   const [isHiddenBackground, setIsHiddenBackground] = useState<boolean>(true);
   const [isHiddenText, setIsHiddenText] = useState<boolean>(true);
   const { redoAction, undoAction } = useAppActions();
   const { clearPresID } = useAppActions();
+  const navigate = useNavigate();
 
   const onClickHandleUndo = () => {
     undoAction();
@@ -63,7 +61,13 @@ export default function Toolbar(props: propsLogin & ModalProps) {
 
   const onClickHandleLogOut = () => {
     clearPresID();
-    loginOut(props.setIsLoged);
+    loginOut();
+    navigate("/Login");
+  };
+
+  const onClickHandleDemo = () => {
+    console.log("Демострировать презентацию");
+    navigate("/Presentation-Maker/Viewer");
   };
 
   return (

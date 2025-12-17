@@ -2,17 +2,13 @@ import { useState } from "react";
 import { loginAccount } from "../../signUp";
 import styles from "./Login.module.css";
 import { useAppActions } from "../../store/store";
+import { Link, useNavigate } from "react-router-dom";
 
-export type propsLoginPage = {
-  setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-
-  setIsCreatingAccount: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-};
-
-function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
+function LoginPage() {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const { setEmailName } = useAppActions();
+  const navigate = useNavigate();
 
   return (
     <div className={styles.Background}>
@@ -24,8 +20,9 @@ function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
           className={styles.Button}
           onClick={() => {
             if (email && password) {
-              loginAccount(email, password, setIsLoged).then(() => {
+              loginAccount(email, password).then(() => {
                 setEmailName({ email: email });
+                navigate("/Presentation-Gallary");
               });
             }
           }}
@@ -33,9 +30,9 @@ function LoginPage({ setIsLoged, setIsCreatingAccount }: propsLoginPage) {
           signIn
         </button>
 
-        <div className={styles.Link} onClick={() => setIsCreatingAccount(true)}>
+        <Link to="/Logup" className={styles.Link}>
           signUp
-        </div>
+        </Link>
       </div>
     </div>
   );

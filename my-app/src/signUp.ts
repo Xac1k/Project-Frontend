@@ -21,21 +21,18 @@ async function createAccount(email: string, password: string, name: string) {
   console.log(user);
 }
 
-async function loginAccount(email: string, password: string, setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>) {
+async function loginAccount(email: string, password: string) {
   await account
     .createEmailPasswordSession({
       email: `${email}`,
       password: `${password}`,
-    })
-    .then(() => {
-      setIsLoged(true);
     })
     .catch((res) => {
       console.log(res);
     });
 }
 
-async function loginOut(setIsLoged: React.Dispatch<React.SetStateAction<boolean | undefined>>) {
+async function loginOut() {
   getCurrentSession().then((res) => {
     if (!res) return;
     account.deleteSession({
@@ -43,7 +40,6 @@ async function loginOut(setIsLoged: React.Dispatch<React.SetStateAction<boolean 
     });
 
     console.log(res);
-    setIsLoged(false);
   });
 }
 

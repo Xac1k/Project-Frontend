@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
+    "@types/web-bluetooth": "^0.0.21",
     "appwrite": "^21.4.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^7.10.1",
     "redux": "^5.0.1"
   },
   "devDependencies": {

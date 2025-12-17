@@ -1,7 +1,7 @@
 import type { Models } from "appwrite";
 import { type Slide } from "../../store/types";
 import { SlidePreview } from "../PresentationMaker/workSpace/slide/Slide";
-import { scaleThumblnail } from "../PresentationMaker/workSpace/slideCollection/SlideCollection";
+import { scaleThumblnail } from "../../store/constant";
 import styles from "./Gallary.module.css";
 import { parseISO8601 } from "../common/parseISO8601";
 

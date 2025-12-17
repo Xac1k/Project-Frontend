@@ -9,12 +9,14 @@ import { useAppActions, useAppSelector } from "../../store/store.ts";
 import { useDispatch } from "react-redux";
 import { downloadPresentationDB } from "../../store/Middleware/dataLoaderDB.ts";
 import { blankPresentation } from "../../store/PresentationMax.ts";
+import { useNavigate } from "react-router-dom";
 
 function Gallary() {
   const [rows, setRows] = useState<Models.DefaultRow[]>([]);
   const dispatch = useDispatch();
   const { setPresentationID, setData } = useAppActions();
   const email = useAppSelector((state) => state.present.email);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(email);
@@ -26,6 +28,7 @@ function Gallary() {
 
   const handlePresentationClick = (rowId: string) => {
     dispatch(downloadPresentationDB(rowId));
+    navigate("/Presentation-Maker");
   };
 
   const generateNewPres = () => {
@@ -33,6 +36,7 @@ function Gallary() {
     saveToDB({ ...blankPresentation, presentationID: newPresentationID }, newPresentationID);
     setPresentationID({ presentationID: newPresentationID });
     setData({ ...blankPresentation, presentationID: newPresentationID });
+    navigate("/Presentation-Maker");
   };
 
   return (

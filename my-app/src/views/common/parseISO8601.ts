@@ -3,7 +3,7 @@ const monthNames = ["Января", "Февраля", "Марта", "Апрел�
 export function parseISO8601(text: string, isMonthWord: boolean) {
   const [date, timeField] = text.split("T");
   const [time, timeZone] = timeField.split(/[+-]/g);
-  const [hour, minut, second] = time.split(":");
+  const [hour, minut, _] = time.split(":");
   const [year, month, day] = date.split("-");
 
   let additionHour = "0";

@@ -1,21 +1,24 @@
-import { useState } from "react";
-import { Login } from "./views/Login/Login";
+import { AuthLayout } from "./views/Login/AuthLayout";
 import { PresentationMaker } from "./views/PresentationMaker/PresentationMaker";
-import { useAppSelector } from "./store/store";
 import { Gallary } from "./views/Gallary/Gallary";
+import { Outlet, Route, Routes } from "react-router-dom";
+import { LoginPage } from "./views/Login/LoginPage";
+import { LogupPage } from "./views/Login/LogupPage";
+import { Viewer } from "./views/Viewer/Viewer";
 
 function App() {
-  const [isLoged, setIsLoged] = useState<boolean>();
-  const presentationID = useAppSelector((state) => state.present.presentationID);
-
   return (
-    <>
-      {isLoged ? (
-        <>{presentationID.length == 0 ? <Gallary /> : <PresentationMaker setIsLoged={setIsLoged}></PresentationMaker>}</>
-      ) : (
-        <Login setIsLoged={setIsLoged} />
-      )}
-    </>
+    <Routes>
+      <Route path="/" element={<AuthLayout />}>
+        <Route index element={<LoginPage />} />
+        <Route path="/Logup" element={<LogupPage />} />
+      </Route>
+      <Route path="/Presentation-Gallary" element={<Gallary />} />
+      <Route path="/Presentation-Maker" element={<Outlet />}>
+        <Route index element={<PresentationMaker />} />
+        <Route path="Viewer" element={<Viewer />} />
+      </Route>
+    </Routes>
   );
 }
 

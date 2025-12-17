@@ -1,0 +1,33 @@
+.SlideShow {
+  width: 100vw;
+  height: 100vh;
+  background: rgb(255, 255, 255);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Slide {
+  position: relative;
+  overflow: hidden;
+}
+
+.ExitBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  background-color: #ff6b6b;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.ExitBtn:hover {
+  background-color: #ff5252;
+}
